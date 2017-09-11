@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.it138.face.mapper.PersonMapper">
+  <resultMap id="BaseResultMap" type="top.it138.face.entity.Person">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="person_code" jdbcType="VARCHAR" property="personCode" />
+    <result column="app_id" jdbcType="BIGINT" property="appId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="des" jdbcType="VARCHAR" property="des" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+</mapper>
