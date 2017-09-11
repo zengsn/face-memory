@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>验证你的</title>
+</head>
+<body>
+	<h2>人脸识别账号激活邮件</h2>
+	<p style="font-size: 1.5em;">点击下面的链接激活</p><br />
+	<a th:href="@{{basePath}/activateAccount(code=${code}, basePath=${basePath})}" th:text="@{{basePath}/activateAccount(code=${code}, basePath=${basePath})}">http://www</a>
+</body>
+</html>

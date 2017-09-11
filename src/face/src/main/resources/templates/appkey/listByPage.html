@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>index</title>
+<th:block th:replace="fragments/headTag :: headTag">
+	<!--======== Bootstrap 核心 CSS 文件 ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<!--======== 可选的 Bootstrap 主题文件（一般不用引入） ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap-theme.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+  <script th:src="@{static/html5shiv/3.7.3/html5shiv.min.js}" src="../../static/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script th:src="@{static/respond.js/1.4.2/respond.min.js}" src="../../static/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+	<!-- Bootstrap core JavaScript and validate
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery/3.2.1/jquery.js}"
+		src="../../static/jquery/3.2.1/jquery.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/bootstrap/3.3.7/js/bootstrap.min.js}"
+		src="../../static/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- jquery valide
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/jquery.validate.min.js}"
+		src="../../static/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/additional-methods.min.js}"
+		src="../../static/jquery.validate/1.17.0/additional-methods.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/localization/messages_zh.min.js}"
+		src="../../static/jquery.validate/1.17.0/localization/messages_zh.min.js"></script>
+</th:block>
+</head>
+
+<body>
+	<nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+	<div class="container">
+		<div class="row">
+			<h1>我的appKey</h1><p id="result" class="text-success"></p>
+		</div>
+		<div class="row">
+			<table class="col-lg-12 table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>应用描述</th>
+						<th>appKey</th>
+						<th>appSecret</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="appkey : ${appkeys}">
+						<td th:text="${appkey.appDesc}">我的应用名字和类型</td>
+						<td th:text="${appkey.appKey}">dfskjfdlkashfkldhakjdfha</td>
+						<td th:text="${appkey.appSecret}">pdpocdodlcslsoscjfmfbdjd</td>
+						<td><a href="#"
+							th:onclick="|edit(${appkey.id}, '${appkey.appDesc}')|"
+							onclick="edit(1, '我的应用名字和类型')" id="editBtn" class="btn btn-info">修改应用描述</a>
+							<a th:onclick="|del(${appkey.id})|" href="#"
+							class="btn btn-info">删除</a></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row">
+			<button class="btn btn-primary btn-lg" data-toggle="modal"
+				data-target="#myModal">新增</button>
+		</div>
+		<!-- 分页 -->
+		<th:block th:replace="fragments/paginationBar :: paginationBar"></th:block>
+	</div>
+	<!-- /.container -->
+
+
+
+
+
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新增应用</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="myForm">
+						<div class="form-group">
+							<label for="name">名称</label> <input type="text"
+								class="form-control" name="appDesc" id="appDesc"
+								placeholder="请输入名称">
+						</div>
+						<button type="button" id="addBtn" class="btn btn-default">提交</button>
+					</form>
+					<div>
+						<p id="note" class="text-success"></p>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+
+	<!-- 模态框（Modal2） -->
+	<div class="modal fade" id="myModalEdit" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新增应用</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="myFormEdit">
+						<div class="form-group">
+							<input type="hidden" name="id" id="id2"> <label
+								for="name">名称</label> <input type="text" class="form-control"
+								name="appDesc" id="appDesc2" placeholder="请输入名称">
+						</div>
+						<button type="button" id="editSubmitBtn" class="btn btn-default">提交</button>
+					</form>
+					<div>
+						<p id="note2" class="text-success"></p>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal2 -->
+	</div>
+
+	<!-- My JavaScript Code
+================================================== -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		function myrefresh() {
+			setTimeout('window.location.reload()', 2000);
+		}
+
+		function edit(id, appDesc) {
+			$("#appDesc2").val(appDesc);
+			$("#id2").val(id);
+			$("#myModalEdit").modal('toggle');
+		}
+		
+		function del(id) {
+			$.post({
+				url : /*[[@{/appkeys/delete}]]*/"/appkeys/delete",
+				data : {id:id},
+				success : function(data) {
+					if (data.success) {
+						$("#result").append("删除成功，正在刷新页面");
+						myrefresh();
+					} else {
+						$("#result").append("删除失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+
+		$(function() {
+			$("#myForm").validate({
+				rules : {
+					appDesc : {
+						required : true
+					}
+				}
+			});
+
+			$("#addBtn").click(function() {
+				if (!$("#myForm").valid()) {
+					return;
+				}
+				var formData = $("#myForm").serializeArray();
+				$.post({
+					url : /*[[@{/appkeys/add}]]*/"/appkeys/add",
+					data : formData,
+					success : function(data) {
+						if (data.success) {
+							$("#note").append("添加成功");
+							myrefresh();
+						} else {
+							$("#note").append("添加失败，" + data.errorMsg);
+						}
+					}
+				});
+			});
+
+			$("#editSubmitBtn").click(function() {
+				if (!$("#myFormEdit").valid()) {
+					return;
+				}
+				var formData = $("#myFormEdit").serializeArray();
+				$.post({
+					url : /*[[@{/appkeys/edit}]]*/"/appkeys/edit",
+					data : formData,
+					success : function(data) {
+						if (data.success) {
+							$("#note2").append("修改成功");
+							myrefresh();
+						} else {
+							$("#note2").append("修改失败，" + data.errorMsg);
+						}
+					}
+				});
+			});
+		});
+
+		/*]]>*/
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+debug: false
+logging:
+  level:
+    tk:
+      mybatis: TRACE
+server:
+  port: 8088
+#Spring Boot配置
+spring:
+  profiles:
+    active: dev
+  datasource: #数据源
+    driver-class-name: com.mysql.jdbc.Driver
+    username: faceApp
+    password: root
+    url: jdbc:mysql://www.it138.top:3306/face?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    druid:
+      max-active: 20
+      test-on-borrow: true
+      min-idle: 1
+      initial-size: 1
+  mvc:
+    static-path-pattern: /static/**
+  #彩色日志
+  output:  
+    ansi:
+      enabled: always
+  #视图模型 
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+    encoding: UTF-8
+    mode: HTML
+    content-type: text/html
+    check-template-location: true
+    
+  #mail
+  mail:
+    host: smtp.qq.com
+    username: 1733815552@qq.com
+    password: vaavxuzqhcmhbdge
+    properties: {
+      mail.smtp.auth: true,      #设置是否需要认证，如果为true,那么用户名和密码就必须的，
+        #加密连接（TLS或SSL）
+      mail.smtp.starttls.enable: true,  
+      mail.smtp.starttls.required: true,
+        #timeout
+      mail.smtp.connectiontimeout: 5000,
+      mail.smtp.timeout: 3000,
+      mail.smtp.writetimeout: 5000
+    }
+
+#Mybatis配置    
+mybatis:
+    type-aliases-package: top.it138.face.mapper
+    mapper-locations: classpath:mapper/*.xml
+    configuration:
+        map-underscore-to-camel-case: true
+        default-fetch-size: 100
+        default-statement-timeout: 30       
+mapper: 
+  mappers: top.it138.face.util.MyMapper
+  not-empty: true
+  identity: MYSQL
+  
+  
+#----mybatis 分页
+pagehelper:
+  helperDialect: mysql
+  supportMethodsArguments: true
+  params: count=countSql
+  reasonable: true
+  
+
