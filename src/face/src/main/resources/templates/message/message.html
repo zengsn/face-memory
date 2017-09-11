@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>登录</title>
+<th:block th:replace="fragments/headTag :: headTag">
+	<!--======== Bootstrap 核心 CSS 文件 ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<!--======== 可选的 Bootstrap 主题文件（一般不用引入） ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap-theme.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+  <script th:src="@{static/html5shiv/3.7.3/html5shiv.min.js}" src="../../static/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script th:src="@{static/respond.js/1.4.2/respond.min.js}" src="../../static/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+		<!-- Bootstrap core JavaScript and validate
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery/3.2.1/jquery.js}"
+		src="../../static/jquery/3.2.1/jquery.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/bootstrap/3.3.7/js/bootstrap.min.js}"
+		src="../../static/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- jquery valide
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/jquery.validate.min.js}"
+		src="../../static/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/additional-methods.min.js}"
+		src="../../static/jquery.validate/1.17.0/additional-methods.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/localization/messages_zh.min.js}"
+		src="../../static/jquery.validate/1.17.0/localization/messages_zh.min.js"></script>
+</th:block>
+
+</head>
+<body>
+<!--  网页开始
+================================================== -->
+<div class="jumbotron">
+	<div class="container">
+		<h1>提示</h1>
+		<p th:text="${message}">这是一个超大屏幕（Jumbotron）的实例。</p>
+		<p><a th:href="@{/}" class="btn btn-primary btn-lg" role="button">
+			返回首页</a>
+		</p>
+	</div>
+</div>
+
+</body>
+
+</html>
