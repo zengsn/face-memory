@@ -2,32 +2,47 @@ package top.it138.face.entity;
 
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table(name = "t_person")
 public class Person {
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "person_code")
-    private String personCode;
-
-    @Column(name = "app_id")
-    private Long appId;
+    private String identification;
 
     private String name;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birth;
 
-    private String des;
+    private String phone;
 
+    private String identity;
+
+    @Column(name = "group_id")
+    @NotNull
+    private Long groupId;
+
+    @JsonIgnore
     @Column(name = "gmt_create")
     private Date gmtCreate;
 
+    @JsonIgnore
     @Column(name = "gmt_modified")
     private Date gmtModified;
 
+    @JsonIgnore
+    @Column(name = "user_id")
+    private Long userId;
+
     /**
-     * @return ID
+     * @return id
      */
     public Long getId() {
         return id;
@@ -41,31 +56,17 @@ public class Person {
     }
 
     /**
-     * @return person_code
+     * @return identification
      */
-    public String getPersonCode() {
-        return personCode;
+    public String getIdentification() {
+        return identification;
     }
 
     /**
-     * @param personCode
+     * @param identification
      */
-    public void setPersonCode(String personCode) {
-        this.personCode = personCode;
-    }
-
-    /**
-     * @return app_id
-     */
-    public Long getAppId() {
-        return appId;
-    }
-
-    /**
-     * @param appId
-     */
-    public void setAppId(Long appId) {
-        this.appId = appId;
+    public void setIdentification(String identification) {
+        this.identification = identification;
     }
 
     /**
@@ -83,17 +84,59 @@ public class Person {
     }
 
     /**
-     * @return des
+     * @return birth
      */
-    public String getDes() {
-        return des;
+    public Date getBirth() {
+        return birth;
     }
 
     /**
-     * @param des
+     * @param birth
      */
-    public void setDes(String des) {
-        this.des = des;
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    /**
+     * @return phone
+     */
+    public String getPhone() {
+        return phone;
+    }
+
+    /**
+     * @param phone
+     */
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    /**
+     * @return identity
+     */
+    public String getIdentity() {
+        return identity;
+    }
+
+    /**
+     * @param identity
+     */
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    /**
+     * @return group_id
+     */
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * @param groupId
+     */
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     /**
@@ -122,5 +165,19 @@ public class Person {
      */
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    /**
+     * @return user_id
+     */
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId
+     */
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

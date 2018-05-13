@@ -3,6 +3,8 @@ package top.it138.face.entity;
 import java.util.Date;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Table(name = "t_user_role")
 public class UserRole {
     @Id
@@ -14,9 +16,11 @@ public class UserRole {
 
     private String role;
 
+    @JsonIgnore
     @Column(name = "gmt_create")
     private Date gmtCreate;
 
+    @JsonIgnore
     @Column(name = "gmt_modified")
     private Date gmtModified;
 

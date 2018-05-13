@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import top.it138.face.util.CapchaUtil;
 
 public class CaptchaAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-
 	// ~Filed
 	private final String CAPTCHA_FIELD = "code";
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -33,10 +32,9 @@ public class CaptchaAuthenticationFilter extends AbstractAuthenticationProcessin
 		log.error("ReCaptcha failed : " + errorMsg);
 
 		try {
-			response.sendRedirect("/login?error=1");
+			response.sendRedirect(request.getContextPath() + "/login?error=1");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("发送重定向到登录错误页面s失败", e);
 		}
 	}
 

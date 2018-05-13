@@ -1,5 +1,7 @@
 package top.it138.face.service;
 
+import com.github.pagehelper.Page;
+
 import top.it138.face.entity.User;
 
 public interface UserService extends BaseService<User>{
@@ -23,4 +25,6 @@ public interface UserService extends BaseService<User>{
 	 * 通过code查找
 	 */
 	User selectByCode(String code);
+	
+	Page<User> selectPage(int pageNum, int pageSize);
 }

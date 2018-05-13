@@ -38,8 +38,8 @@ public class CapchaUtil {
 		try {
 			cage.draw(token, resp.getOutputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException("相应时发生错误", e);
 		}
 	}
 	

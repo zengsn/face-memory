@@ -3,6 +3,8 @@ package top.it138.face.entity;
 import java.util.Date;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Table(name = "t_photo")
 public class Photo {
     @Id
@@ -12,14 +14,20 @@ public class Photo {
     @Column(name = "person_id")
     private Long personId;
 
-    @Column(name = "suffix_name")
-    private String suffixName;
+    private String path;
 
+    private String suffix;
+
+    @JsonIgnore
+    @Column(name = "gmt_modified")
+    private Date gmtModified;
+
+    @JsonIgnore
     @Column(name = "gmt_create")
     private Date gmtCreate;
 
-    @Column(name = "gmt_modified")
-    private Date gmtModified;
+    @Column(name = "user_id")
+    private Long userId;
 
     /**
      * @return id
@@ -50,17 +58,45 @@ public class Photo {
     }
 
     /**
-     * @return suffix_name
+     * @return path
      */
-    public String getSuffixName() {
-        return suffixName;
+    public String getPath() {
+        return path;
     }
 
     /**
-     * @param suffixName
+     * @param path
      */
-    public void setSuffixName(String suffixName) {
-        this.suffixName = suffixName;
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    /**
+     * @return suffix
+     */
+    public String getSuffix() {
+        return suffix;
+    }
+
+    /**
+     * @param suffix
+     */
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    /**
+     * @return gmt_modified
+     */
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    /**
+     * @param gmtModified
+     */
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     /**
@@ -78,16 +114,16 @@ public class Photo {
     }
 
     /**
-     * @return gmt_modified
+     * @return user_id
      */
-    public Date getGmtModified() {
-        return gmtModified;
+    public Long getUserId() {
+        return userId;
     }
 
     /**
-     * @param gmtModified
+     * @param userId
      */
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

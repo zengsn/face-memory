@@ -2,9 +2,10 @@ package top.it138.face.service;
 
 import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 
 import top.it138.face.entity.User;
 
@@ -64,6 +65,15 @@ public class UserServiceImpl  extends BaseServiceImpl<User> implements UserServi
 		} else {
 			return uList.get(0);
 		}
+	}
+
+	@Override
+	public Page<User> selectPage(int pageNum, int pageSize) {
+		Page<User> pageBeen = PageHelper.startPage(pageNum, pageSize);
+		User record = new User();
+		mapper.select(record );
+		
+		return pageBeen;
 	}
 
 }

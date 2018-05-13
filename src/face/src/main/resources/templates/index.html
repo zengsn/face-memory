@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
-<title>index</title>
+<title>首页</title>
 <th:block th:replace="fragments/headTag :: headTag">
 	<!--======== Bootstrap 核心 CSS 文件 ========-->
 	<link rel="stylesheet" type="text/css"
@@ -43,9 +43,57 @@
 <body>
 <nav th:replace="fragments/bodyHeader :: bodyHeader">
 	</nav>
-	<div>
-	dfsdf
+	<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="carousel slide" id="carousel-146078">
+				<ol class="carousel-indicators">
+					<li class="active" data-slide-to="0" data-target="#carousel-146078">
+					</li>
+					<li data-slide-to="1" data-target="#carousel-146078">
+					</li>
+					<li data-slide-to="2" data-target="#carousel-146078">
+					</li>
+				</ol>
+				<div class="carousel-inner">
+					<div class="item active">
+						<img alt=""  width="100%" th:src="@{/static/assert/img/1.jpg}" src="img/1.jpg" />
+						<div class="carousel-caption">
+							<h4>
+								未来
+							</h4>
+							<p>
+								未来十年 人脸识别将如何影响人类社会
+							</p>
+						</div>
+					</div>
+					<div class="item">
+						<img alt=""  width="100%" th:src="@{/static/assert/img/2.jpg}" src="img/2.jpg" />
+						<div class="carousel-caption">
+							<h4>
+								人脸识别
+							</h4>
+							<p>
+								未来十年的重要科技改革
+							</p>
+						</div>
+					</div>
+					<div class="item">
+						<img alt="" width="100%" th:src="@{/static/assert/img/3.jpg}" src="img/3.jpg" />
+						<div class="carousel-caption">
+							<h4>
+								精准识别
+							</h4>
+							<p>
+								多个特征点进行特征识别
+							</p>
+						</div>
+					</div>
+				</div> <a data-slide="prev" href="#carousel-146078" class="left carousel-control">‹</a> <a data-slide="next" href="#carousel-146078" class="right carousel-control">›</a>
+			</div>
+		</div>
 	</div>
+</div>
 </body>
 
 </html>

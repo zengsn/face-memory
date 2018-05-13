@@ -1,15 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.0"
-    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 26
     defaultConfig {
-        applicationId "edu.hzuapps.faceunlock"
-        minSdkVersion 22
-        targetSdkVersion 24
+        applicationId "com.hzshang.faceunlock"
+        minSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,18 +15,48 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
+
+}
+
+allprojects {
+    repositories {
+        maven {
+            url "https://github.com/omadahealth/omada-nexus/raw/master/release"
+        }
+        jcenter()
+
+    }
+}
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
 }
 
 dependencies {
+    implementation 'com.android.support:design:26.1.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
-    compile 'com.android.support:support-v4:24.2.1'
+    compile 'org.greenrobot:eventbus:3.1.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-v13:26.1.0'
+    compile 'uk.me.lewisdeane.ldialogs:ldialogs:1.2.0@aar'
+    compile('com.github.omadahealth:lollipin:2.1.0@aar') {
+        transitive = true
+    }
     testCompile 'junit:junit:4.12'
-    compile 'com.google.code.gson:gson:2.8.1'
-    compile 'commons-codec:commons-codec:1.10'
-    compile files('libs/face-sdk-0.0.1-SNAPSHOT.jar')
+    implementation files('libs/FaceppSDK.jar')
+    compile files('libs/face-check-0.0.1-SNAPSHOT.jar')
+    implementation files('libs/face-check-impl-0.0.1-SNAPSHOT.jar')
+    //人脸识别依赖
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    //implementation 'commons-codec:commons-codec:1.11'
 }
+

@@ -12,9 +12,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import tk.mybatis.mapper.common.Mapper;
+import top.it138.face.entity.Group;
 
 /**
- * 数据库表服务基类，可以根据需要拓展
+ * 数据库库表服务基类，可以根据需要拓展
  * 
  * @author Lenovo
  *
@@ -35,8 +36,8 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 			Method setGmtCreateMethod = clazz.getMethod("setGmtCreate", Date.class);
 			setGmtCreateMethod.invoke(entity, new Date());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException("插入数据库发生错误");
 		}
 		return mapper.insert(entity);
 	}
@@ -81,11 +82,10 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	public int update(T entity) {
 		try {
 			Class<?> clazz = entity.getClass();
-			Method setGmtModifiedMethod = clazz .getMethod("setGmtModified", Date.class);
+			Method setGmtModifiedMethod = clazz.getMethod("setGmtModified", Date.class);
 			setGmtModifiedMethod.invoke(entity, new Date());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("更新数据库发生错误", e);
 		}
 		return mapper.updateByPrimaryKey(entity);
 	}
@@ -94,4 +94,5 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	public List<T> select(T entity) {
 		return mapper.select(entity);
 	}
+
 }

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>人员管理</title>
+<th:block th:replace="fragments/headTag :: headTag">
+	<!--======== Bootstrap 核心 CSS 文件 ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<!--======== 可选的 Bootstrap 主题文件（一般不用引入） ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap-theme.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+  <script th:src="@{static/html5shiv/3.7.3/html5shiv.min.js}" src="../../static/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script th:src="@{static/respond.js/1.4.2/respond.min.js}" src="../../static/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+	<!-- Bootstrap core JavaScript and validate
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery/3.2.1/jquery.js}"
+		src="../../static/jquery/3.2.1/jquery.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/bootstrap/3.3.7/js/bootstrap.min.js}"
+		src="../../static/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- jquery valide
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/jquery.validate.min.js}"
+		src="../../static/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/additional-methods.min.js}"
+		src="../../static/jquery.validate/1.17.0/additional-methods.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/localization/messages_zh.min.js}"
+		src="../../static/jquery.validate/1.17.0/localization/messages_zh.min.js"></script>
+</th:block>
+	<!-- 图片显示框样式
+================================================== -->
+<style type="text/css">
+  .img-cont{
+/*     width:1000px;
+    height:570px; */
+    min-height:300px;
+    border:2px solid #317ef3;
+    margin:50px auto;
+  }
+
+  .img-cont>div{
+    width:300px;
+    height:260px;
+    border:1px solid #777;
+    float:left;
+    margin:20px 0 0 20px;
+  }
+
+  .img-cont>div>div{
+    width:300px;
+    height:220px;
+    border:1px solid red;
+  }
+
+  .img-cont>div>a{
+    width:60px;
+    height:30px;
+    border-radius:4px;
+    line-height: 30px;
+    text-align: center;
+    color:#fff;
+    display: block;
+    background: #317ef3;
+    margin:5px 0 0 0px;
+    cursor: pointer;
+  }
+
+  .hide{
+    display: none !important;
+  }
+</style>
+
+	<!-- 上传文件
+================================================== -->	
+<link th:href="@{/static/Q.Uploader/css/uploader-image.css}" href="../../static/Q.Uploader/css/uploader-image.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" th:src="@{/static/Q.Uploader/js/Q.js}" src="../../static/Q.Uploader/js/Q.js"></script>
+ <script type="text/javascript" th:src="@{/static/Q.Uploader/js/Q.Uploader.js}" src="../../static/Q.Uploader/Q.Uploader.js"></script>
+ <script type="text/javascript" th:src="@{/static/Q.Uploader/js/Q.Uploader.UI.Image.js}" src="../../static/Q.Uploader/Q.Uploader.UI.Image.js"></script>
+</head>
+
+<body>
+	<nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+	<div class="container">
+		<div class="row">
+			<h1 th:text="|分组：${group.groupName}-人员编辑|">分组：分组一-人员编辑</h1><p id="result" class="text-success"></p>
+		</div>
+		<div class="row">
+			<table class="col-lg-12 table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>人员ID</th>
+						<th>唯一标识</th>
+						<th>姓名</th>
+						<th>身份证</th>
+						<th>生日</th>
+						<th>手机号</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="p : ${persons}">
+						<td th:text="${p.id}">1</td>
+						<td th:text="${p.identification}">111</td>
+						<td th:text="${p.name}">孙悟空</td>
+						<td th:text="${p.identity}">441322199612039563</td>
+						<td th:text="${#dates.format(p.birth, 'yyyy-MM-dd')}">1996-12-03</td>
+						<td th:text="${p.phone}">15765412698</td>
+						<td><a href="#"
+							th:onclick="|goEdit(${p.id})|"
+							onclick="edit(1)" id="editBtn" class="btn btn-info">修改应用描述</a>
+							<a th:onclick="|del(${p.id})|" href="#"
+							class="btn btn-info">删除</a><a href="#"
+							th:onclick="|goEditFace(${p.id})|"
+							onclick="edit(1)" class="btn btn-info">录入人脸</a></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row">
+			<button class="btn btn-primary btn-lg" onclick="goAdd()">新增</button>
+		</div>
+		<!-- 分页 -->
+		<th:block th:replace="fragments/paginationBar :: paginationBar"></th:block>
+	</div>
+	<!-- /.container -->
+
+
+
+
+
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新增人员</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="myForm">
+						<input type="hidden" name="id" id="id">
+						<div class="form-group">
+							<label for="identification">唯一标识(可选)</label> <input type="text"
+								class="form-control" name="identification" id="identification"
+								placeholder="请输入唯一标识，为空自动生成">
+						</div>
+						<div class="form-group">
+							<label for="name">姓名</label> <input type="text"
+								class="form-control" name="name" id="name"
+								placeholder="请输入姓名">
+						</div>
+						<div class="form-group">
+							<label for="identity">身份证(可选)</label> <input type="text"
+								class="form-control" name="identity" id="identity"
+								placeholder="请输入身份证号码">
+						</div>
+						<div class="form-group">
+							<label for="birth">出生日期(可选)</label> <input type="text"
+								class="form-control datePicker" name="birth" id="birth"
+								placeholder="请输入出生日期">
+						</div>
+						<div class="form-group">
+							<label for="phone">手机(可选)</label> <input type="text"
+								class="form-control" name="phone" id="phone"
+								placeholder="请输入手机号码">
+						</div>
+						<input type="hidden" name="groupId" th:value="${group.id}">
+						<button type="button" id="submitBtn" class="btn btn-default">提交</button>
+					</form>
+					<div>
+						<p id="note" class="text-success"></p>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+	
+	
+	<!-- 人脸照片模态框（Modal） -->
+	<div class="modal fade" id="faceModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog"  style="width:90%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">录入人脸照片</h4>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span12">
+								<form>
+							      <input type="file" onchange='PreviewImage(this)' />
+							    </form>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12">
+								<div class="img-cont"></div> 
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12">
+								 <div class="contentin">
+						                <div>
+						                    <a id="upload-target" class="btn btn-primary">添加图片并压缩</a>
+						                    <a id="start-upload" class="btn btn-primary">开始上传</a>
+						                </div>
+						                <div id="upload-image-view" class="clearfix"></div>
+						                <div id="log"></div>
+						            </div>
+						        </div>
+						        <div id="sidebar" class="sidebar"></div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<!-- /.modal-body -->
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+
+
+	<!-- My JavaScript Code
+================================================== -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		
+		var op = "add";
+
+		function myrefresh() {
+			setTimeout('window.location.reload()', 1000);
+		}
+
+		function goEdit(id) {
+			op = "edit";
+			$("myModalLabel").text("编辑人员");
+			setFromEmpty();
+			showFrom(id);
+		}
+		
+		function goEditFace(personId) {
+			var url = /*[[@{/photo/faceInput?personId=}]]*/"";
+			$("#faceModal").modal({
+				remote:url + personId,//可以填写一个url，会调用jquery load方法加载数据
+				keyboard:true//当按下esc键时，modal框消失
+			});
+			
+
+		}
+		$("#faceModal").on("hide.bs.modal",function(){
+				$(this).removeData("bs.modal");
+		});
+		
+		
+		
+		
+		function goAdd() {
+			op = "add";
+			$("myModalLabel").text("新增人员");
+			setFromEmpty();
+			$("#myModal").modal('toggle');
+		}
+		
+		function setFromEmpty() {
+			$("#myForm")[0].reset();
+		}
+		
+		function showFrom(id) {
+			$.post({
+				url : /*[[@{/person/byId}]]*/"/person/byId",
+				data : {id:id},
+				success : function(result) {
+					if (result.success) {
+						person = result.data;
+						$("#myForm").loadData({
+							data : person,
+							rules : {
+								groupId:false
+							},
+							format : {
+								birth : {
+									type : "date",
+									fmt : "yyyy-MM-dd"
+								}
+							}
+						});
+					} else {
+						$("#note").text("获取数据失败，" + result.errorMsg);
+					}
+					$("#myModal").modal('toggle');
+				}
+			});
+		}
+		
+		function del(id) {
+			$.post({
+				url : /*[[@{/person/delete}]]*/"/person/delete",
+				data : {id:id},
+				success : function(data) {
+					if (data.success) {
+						$("#result").append("删除成功，正在刷新页面");
+						myrefresh();
+					} else {
+						$("#result").append("删除失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+		
+		function add() {
+			var formData = $("#myForm").serializeArray();
+			$.post({
+				url : /*[[@{/person/add}]]*/"/person/add",
+				data : formData,
+				success : function(data) {
+					if (data.success) {
+						$("#note").append("添加成功");
+						myrefresh();
+					} else {
+						$("#note").append("添加失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+		
+		function edit() {
+			var formData = $("#myForm").serializeArray();
+			$.post({
+				url : /*[[@{/person/edit}]]*/"/person/edit",
+				data : formData,
+				success : function(data) {
+					if (data.success) {
+						$("#note").append("修改成功");
+						myrefresh();
+					} else {
+						$("#note").append("修改失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+
+		$(function() {
+			$("#myForm").validate({
+				rules : {
+					name : {
+						required : true,
+						rangelength:[1,20]
+					},
+					birth : {
+						dateISO:true
+					},
+					identity : {
+						isIdCardNo:true
+					},
+					phone : {
+						isPhone:true
+					}
+				}
+			});
+
+			$("#submitBtn").click(function() {
+				if (!$("#myForm").valid()) {
+					return;
+				}
+				$("#note").text("");
+				if (op == "add") {
+					add();
+				} else if (op == "edit") {
+					edit();
+				}
+			});
+		});
+		
+		$(function() {
+			$(".datePicker").datetimepicker({//选择年月日
+			　　　　　　format: 'yyyy-mm-dd',
+			　　　　　　language: 'zh-CN',
+			　　　　　　weekStart: 1,
+			　　　　　　todayBtn: 1,//显示‘今日’按钮
+			　　　　　　autoclose: 1,
+			　　　　　　todayHighlight: 1,
+			　　　　　　startView: 4,
+			　　　　　　minView: 2,  //Number, String. 默认值：0, 'hour'，日期时间选择器所能够提供的最精确的时间选择视图。
+
+			　　　　　　clearBtn:true,//清除按钮
+
+			　　　　　　forceParse: 0
+			　　　　});
+		});
+	
+		
+		
+
+		/*]]>*/
+	</script>
+
+</body>
+
+</html>

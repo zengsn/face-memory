@@ -1,0 +1,173 @@
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">录入人脸照片</h4>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span12">
+								<div id="note" style="display:none " class="alert alert-success"></div>
+								<div class="img-cont"></div> 
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12">
+								 <div class="contentin">
+						                <div>
+						                    <a id="upload-target" class="btn btn-primary">添加图片并压缩</a>
+						                    <a id="start-upload" class="btn btn-primary">开始上传</a>
+						                </div>
+						                <div id="upload-image-view" class="clearfix"></div>
+						                <div id="log"></div>
+						            </div>
+						        </div>
+						        <div id="sidebar" class="sidebar"></div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<!-- /.modal-body -->
+
+
+	<!-- My JavaScript Code
+================================================== -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		
+		
+		/**
+		
+显示图片
+		**/
+		var id="1";
+		function PreviewImage(photo) { 
+		       //添加显示图片的HTML元素
+		       var path  = photo.path;
+		       var pid = photo.id;
+		       id += 1;
+		       $(".img-cont").append("<div><div id='"+id+"'><img src='' /></div><a onclick='delPhoto("+pid+")' class='hide delete-btn'>删除</a></div>");
+		       document.getElementById(id).innerHTML = "<img src='"+path+"' width='300' height='220' />";
+		}  
+
+
+		//控制"按钮"显示与隐藏
+		$(".img-cont").off("mouseenter","div").on("mouseenter","div",function(){
+		    var that=this;
+		    var dom=$(that).children("a");
+		    dom.removeClass("hide");
+		    //为点击事件解绑，防止重复执行
+		    dom.off("click");
+		    dom.on("click",function(){
+		    	//删除当前图片
+		     	dom.parent().remove();
+		     });
+		}).off("mouseleave","div").on("mouseleave","div",function(){
+		    var that=this;
+		    $(that).children("a").addClass("hide");
+		})
+		
+		
+		/**
+上传图片
+		**/
+		function log(msg) {
+            document.getElementById("log").innerHTML += (msg != undefined ? msg : "") + "<br />";
+        }
+
+        var Uploader = Q.Uploader,
+            formatSize = Q.formatSize,
+            boxView = document.getElementById("upload-image-view");
+
+        var uploader = new Uploader({
+            url: /*[[@{|/photo/upload?personId=${personId}|}]]*/"photo/upload",
+            target: document.getElementById("upload-target"),
+            view: boxView,
+            dataType: "json",
+            workerThread: 3,
+            //将auto配置为false以手动上传
+            auto: false,
+
+            allows: ".jpg,.png,.gif,.bmp",
+
+            //图片缩放
+            scale: {
+                //要缩放的图片格式
+                types: ".jpg",
+                //最大图片大小(width|height)
+                maxWidth: 1024
+            },
+
+            on: {
+                //添加之前触发
+                add: function (task) {
+                    if (task.disabled) return alert("允许上传的文件格式为：" + this.ops.allows);
+                },
+                //图片预览后触发
+                preview: function (data) {
+                    log(data.task.name + " : " + data.src);
+                },
+                //图片压缩后触发,如果图片或浏览器不支持压缩,则不触发
+                scale: function (data) {
+                    log(data.task.name + " : 已压缩！");
+                },
+                upload: function (task) {
+                    log(task.name + " : 开始上传");
+                },
+                remove: function (task) {
+                    log(task.name + " : 已移除！");
+                },
+                complete: function(task){
+                	log(task.name + " : 上传完成！");
+                	boxView.removeChild(task.box);
+                	console.log(task);
+                	if (task.json.error) {
+                		log(task.name + " ： 上传失败，" + task.json.error)
+                	}
+                	PreviewImage(task.json.data);
+                }
+            }
+        });
+        
+        function delPhoto(id) {
+        	$.post({
+				url : /*[[@{/photo/delete}]]*/"/photo/delete",
+				data : {id:id},
+				success : function(result) {
+					if (result.success) {
+						console.log(result);
+					} else {
+						$("#note").append("删除失败，" + data.errorMsg);
+					}
+				}
+			});
+        }
+
+        //将auto配置为false以手动上传
+        //uploader.start();
+
+        document.getElementById("start-upload").onclick = function () {
+            uploader.start();
+        };
+        
+        $(function(){
+        	$("#note").text("正在加载。。。");
+        	$.post({
+        		url:/*[[@{|/photo/getFaces?personId=${personId}|}]]*/"/photo/getFaces",
+        		success:function(result){
+        			$("#note").text("");
+        			if (result.success) {
+        				var data = result.data;
+        				for (p in data) {
+        					console.log(p);
+        					PreviewImage(data[p]);
+        				}
+        			} 
+        		}
+        	});
+        });
+        
+
+		/*]]>*/
+	</script>

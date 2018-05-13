@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
-<title>登录</title>
+<title>注册</title>
 <th:block th:replace="fragments/headTag :: headTag">
 	<!--======== Bootstrap 核心 CSS 文件 ========-->
 	<link rel="stylesheet" type="text/css"
@@ -322,7 +322,7 @@ body, .form-bg {
 				rules : {
 					username : {
 						required : true,
-						minlength : 6,
+						minlength : 5,
 						maxlength : 11
 					},
 					password : {

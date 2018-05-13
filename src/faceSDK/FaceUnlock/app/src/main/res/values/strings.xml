@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FaceUnlock</string>
+
+    <string name="dummy_button">解锁</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_un_look">解锁界面</string>
+</resources>
