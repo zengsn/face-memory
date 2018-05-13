@@ -1,13 +1,12 @@
 package top.it138.face.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import top.it138.face.entity.App;
+import top.it138.face.util.StringUtil;
 
 @Service
 public class AppServiceImpl extends BaseServiceImpl<App> implements AppService {
@@ -24,14 +23,11 @@ public class AppServiceImpl extends BaseServiceImpl<App> implements AppService {
 	
 	@Override
 	public App selectByAppKey(String appKey) {
+		if (StringUtil.isEmpty(appKey)) {
+			return null;
+		}
 		App record = new App();
 		record.setAppKey(appKey);
-		List<App> list = mapper.select(record );
-		
-		if (list.isEmpty()) {
-			return null;
-		} else {
-			return list.get(0);
-		}
+		return mapper.selectOne(record);
 	}
 }

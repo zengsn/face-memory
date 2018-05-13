@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>分组管理</title>
+<th:block th:replace="fragments/headTag :: headTag">
+	<!--======== Bootstrap 核心 CSS 文件 ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<!--======== 可选的 Bootstrap 主题文件（一般不用引入） ========-->
+	<link rel="stylesheet" type="text/css"
+		th:href="@{static/bootstrap/3.3.7/css/bootstrap-theme.min.css}"
+		href="../../static/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+  <script th:src="@{static/html5shiv/3.7.3/html5shiv.min.js}" src="../../static/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script th:src="@{static/respond.js/1.4.2/respond.min.js}" src="../../static/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+	<!-- Bootstrap core JavaScript and validate
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery/3.2.1/jquery.js}"
+		src="../../static/jquery/3.2.1/jquery.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/bootstrap/3.3.7/js/bootstrap.min.js}"
+		src="../../static/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- jquery valide
+================================================== -->
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/jquery.validate.min.js}"
+		src="../../static/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/additional-methods.min.js}"
+		src="../../static/jquery.validate/1.17.0/additional-methods.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/jquery.validate/1.17.0/localization/messages_zh.min.js}"
+		src="../../static/jquery.validate/1.17.0/localization/messages_zh.min.js"></script>
+	<script type="text/javascript"
+		th:src="@{static/my/jquery.loadData.js}"
+		src="../../static/my/jquery.loadData.js"></script>
+		
+</th:block>
+</head>
+
+<body>
+	<nav th:replace="fragments/bodyHeader :: bodyHeader"></nav>
+	<div class="container">
+		<div class="row">
+			<h1 th:text="|我的分组-${app.appDesc}|">我的分组</h1><p id="result" class="text-success"></p>
+		</div>
+		<div class="row">
+			<table class="col-lg-12 table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>分组ID</th>
+						<th>分组名称</th>
+						<th>最大人员数</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="g : ${groups}">
+						<td th:text="${g.id}">我的应用名字和类型</td>
+						<td th:text="${g.groupName}">分组1</td>
+						<td th:text="${g.maxNum}">4</td>
+						<td><a href="#"
+							th:onclick="|goEdit(${g.id})|"
+							onclick="edit(1)" id="editBtn" class="btn btn-info">修改应用描述</a>
+							<a th:onclick="|del(${g.id})|" href="#"
+							class="btn btn-info">删除</a><a  th:href="@{|/person/listByPage?groupId=${g.id}|}" href="#"
+							class="btn btn-info">编辑人员</a></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row">
+			<button class="btn btn-primary btn-lg" onclick="goAdd()">新增</button>
+		</div>
+		<!-- 分页 -->
+		<th:block th:replace="fragments/paginationBar :: paginationBar"></th:block>
+	</div>
+	<!-- /.container -->
+
+
+
+
+
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新增分组</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="myForm">
+						<input type="hidden" name="id" id="id">
+						<div class="form-group">
+							<label for="groupName">分组名称</label> <input type="text"
+								class="form-control" name="groupName" id="groupName"
+								placeholder="请输入名称">
+						</div>
+						<div class="form-group">
+							<label for="maxNum">最大人员数量</label> <input type="text"
+								class="form-control" name="maxNum" id="maxNum"
+								placeholder="请输入名称">
+						</div>
+						<input type="hidden" name="appKey" th:value="${app.appKey}">
+						<button type="button" id="submitBtn" class="btn btn-default">提交</button>
+					</form>
+					<div>
+						<p id="note" class="text-success"></p>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+
+
+	<!-- My JavaScript Code
+================================================== -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		
+		var op = "add";
+
+		function myrefresh() {
+			setTimeout('window.location.reload()', 1000);
+		}
+
+		function goEdit(id) {
+			op = "edit";
+			$("myModalLabel").text("编辑分组");
+			showFrom(id);
+		}
+		
+		function goAdd() {
+			op = "add";
+			$("myModalLabel").text("新增分组");
+			setFromEmpty();
+			$("#myModal").modal('toggle');
+		}
+		
+		function setFromEmpty() {
+			$("#id").val("");
+			$("#groupName").val("");
+			$("#maxNum").val("");
+		}
+		
+		function showFrom(id) {
+			$.post({
+				url : /*[[@{/group/byId}]]*/"/group/byId",
+				data : {id:id},
+				success : function(result) {
+					if (result.success) {
+						group = result.data;
+						$("#myForm").loadData({
+							data:group,
+							rules:{
+								appKey:false
+							}
+						});
+					} else {
+						$("#note").text("获取数据失败，" + result.errorMsg);
+					}
+					$("#myModal").modal('toggle');
+				}
+			});
+		}
+		
+		
+		function del(id) {
+			$.post({
+				url : /*[[@{/group/delete}]]*/"/group/delete",
+				data : {id:id},
+				success : function(data) {
+					if (data.success) {
+						$("#result").append("删除成功，正在刷新页面");
+						myrefresh();
+					} else {
+						$("#result").append("删除失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+		
+		function add() {
+			var formData = $("#myForm").serializeArray();
+			$.post({
+				url : /*[[@{/group/add}]]*/"/group/add",
+				data : formData,
+				success : function(data) {
+					if (data.success) {
+						$("#note").append("添加成功");
+						myrefresh();
+					} else {
+						$("#note").append("添加失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+		
+		function edit() {
+			var formData = $("#myForm").serializeArray();
+			$.post({
+				url : /*[[@{/group/edit}]]*/"/group/edit",
+				data : formData,
+				success : function(data) {
+					if (data.success) {
+						$("#note").append("修改成功");
+						myrefresh();
+					} else {
+						$("#note").append("修改失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+
+		$(function() {
+			$("#myForm").validate({
+				rules : {
+					groupName : {
+						required : true,
+						rangelength:[1,10]
+					},
+					maxNum : {
+						required : true,
+						digits:true
+					}
+				}
+			});
+
+			$("#submitBtn").click(function() {
+				if (!$("#myForm").valid()) {
+					return;
+				}
+				$("#note").text("");
+				if (op == "add") {
+					add();
+				} else if (op == "edit") {
+					edit();
+				}
+			});
+		});
+
+		/*]]>*/
+	</script>
+
+</body>
+
+</html>

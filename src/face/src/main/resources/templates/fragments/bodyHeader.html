@@ -49,8 +49,9 @@ PetClinic :: a Spring Framework demonstration
 			</div>
 			<div class="collapse navbar-collapse" id="example-navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a th:href="@{/appkeys/listByPage}" href="#">我的APPKEY</a></li>
-			
+					<li><a sec:authorize="hasRole('ROLE_USER')" th:href="@{/appkeys/listByPage}" href="#">我的APPKEY</a></li>
+					<li><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/users/listByPage}" href="#">用户管理</a></li>
+					<li><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/logs/listByPage}" href="#">查看日志</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
@@ -67,6 +68,7 @@ PetClinic :: a Spring Framework demonstration
 									<span th:text="${#authentication.name}" th:remove="tag"></span> <b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
+									<li><a id="changePassword" href="#">修改密码</a></li>
 									<li><a th:href="@{/logout}" href="#">退出</a></li>
 								</ul>
 							</li>
@@ -75,6 +77,99 @@ PetClinic :: a Spring Framework demonstration
 				</ul>
 			</div>
 		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			function myrefresh() {
+				setTimeout('window.location.reload()', 1000);
+			}
+		
+			$(function() {
+				$("#passwordForm").validate({
+					rules : {
+						oldPassword : {
+							required : true,
+							rangelength:[6,16]
+						},
+						password : {
+							required : true,
+							rangelength:[6,16]
+						},
+						password2 : {
+							required : true,
+							rangelength:[6,16]
+						}
+					}
+				});
+			});
+			
+		function passwordEdit() {
+			if (!$("#passwordForm").valid()) {
+				return;
+			}
+			var formData = $("#passwordForm").serializeArray();
+			$.post({
+				url : /*[[@{/changePassword}]]*/"/changePassword2",
+				data : formData,
+				success : function(data) {
+					if (data.success) {
+						$("#passwordnote").text("修改成功");
+						myrefresh();
+					} else {
+						$("#passwordnote").text("修改失败，" + data.errorMsg);
+					}
+				}
+			});
+		}
+		
+		$(function() {
+			$("#changePassword").click(function() {
+				$("#passwordForm")[0].reset();
+				$("#passwordModal").modal('toggle');
+			});
+		});
+		
+		/*]]>*/
+		</script>
+		
+		<!-- 模态框（Modal） -->
+	<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新增分组</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form" id="passwordForm">
+						<div class="form-group">
+							<label for="groupName">旧密码</label> <input type="password"
+								class="form-control" name="oldPassword" id="oldPassword"
+								placeholder="旧密码">
+						</div>
+						<div class="form-group">
+							<label for="maxNum">新密码</label> <input type="password"
+								class="form-control" name="password" id="password"
+								placeholder="新密码">
+						</div>
+						<div class="form-group">
+							<label for="maxNum">重复密码</label> <input type="password"
+								class="form-control" name="password2" id="password2"
+								placeholder="重复输入一次新密码">
+						</div>
+						<button type="button" onClick="passwordEdit()" id="passwordBtn" class="btn btn-default">提交</button>
+					</form>
+					<div>
+						<p id="passwordnote" class="text-success"></p>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
 	</nav>
 </body>
 

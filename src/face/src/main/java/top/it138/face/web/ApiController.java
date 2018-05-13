@@ -1,54 +1,60 @@
 package top.it138.face.web;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.aspectj.util.FileUtil;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static top.it138.face.util.Constants.PHOTO_PATH;
-
-import top.it138.face.dto.PhotoData;
-import top.it138.face.dto.RecognitionData;
+import top.it138.face.common.CommonResult;
+import top.it138.face.dto.FindForm;
+import top.it138.face.dto.PersonWithPath;
 import top.it138.face.entity.App;
+import top.it138.face.entity.Group;
 import top.it138.face.entity.Person;
-import top.it138.face.entity.Photo;
+import top.it138.face.exception.APIException;
+import top.it138.face.exception.RecognitionException;
 import top.it138.face.service.AppService;
+import top.it138.face.service.GroupService;
+import top.it138.face.service.NetworkService;
 import top.it138.face.service.PersonService;
-import top.it138.face.service.PhotoService;
 import top.it138.face.service.RecognitionService;
-import top.it138.face.util.UuidUtil;
+import top.it138.face.util.RequestUtil;
+import top.it138.face.util.SessionUtil;
 
 @RestController
-@RequestMapping("/api/1.0/")
+@RequestMapping("/api/2.0/")
 @Validated
 @Transactional
 public class ApiController {
-	private static final String[] SUFFIX_NAMES = { "png", "jpg" };
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private PersonService personService;
 	@Autowired
 	private AppService appService;
 	@Autowired
-	private PhotoService photoService;
-	@Autowired
 	private RecognitionService recognitionService;
+	@Autowired
+	private NetworkService networkService;
+	@Autowired
+	private GroupService groupService;
 	
 	@RequestMapping(value = "app", method = RequestMethod.GET)
 	public boolean getApp(String appKey, String appSecret) {
@@ -59,192 +65,168 @@ public class ApiController {
 		
 		return false;
 	}
-
-	@RequestMapping(value = "persons", method = RequestMethod.GET)
-	public Object getAll(@NotEmpty @RequestHeader("appKey") String appKey) {
-		return personService.getAllByAppkey(appKey);
-	}
-
-	@RequestMapping(value = "persons", method = RequestMethod.POST)
-	public Person newPerson(@NotEmpty @RequestHeader("appKey") String appKey, @NotEmpty String name, String des) {
-		App app = appService.selectByAppKey(appKey);
-		Person person = new Person();
-		person.setAppId(app.getId());
-		person.setName(name);
-		String personCode = UuidUtil.getUUID();
-		person.setPersonCode(personCode);
-		person.setDes(des);
-		personService.save(person);
-
-		return person;
-	}
-
-	@RequestMapping(value = "persons/{id}", method = RequestMethod.GET)
-	public Object getPerson(@NotEmpty @RequestHeader("appKey") String appKey, @PathVariable("id") Long id,
-			HttpServletResponse response) {
-		App app = appService.selectByAppKey(appKey);
-		Person person = personService.selectById(id);
-		if (person == null) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return "person不存在";
-		}
-		if (!person.getAppId().equals(app.getId())) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "只能访问自己的person";
-		}
-		return person;
-	}
-
-	@RequestMapping(value = "persons/{id}", method = RequestMethod.DELETE)
-	public Object deletePerson(@NotEmpty @RequestHeader("appKey") String appKey, @PathVariable("id") Long id,
-			HttpServletResponse response) {
-		App app = appService.selectByAppKey(appKey);
-		Person person = personService.selectById(id);
-		if (person == null) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return "person不存在";
-		}
-		if (!person.getAppId().equals(app.getId())) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "只能删除自己的person";
-		}
-		personService.delete(person);
-		return "删除成功";
-	}
-
-	@RequestMapping(value = "persons/{id}/photos", method = RequestMethod.GET)
-	public Object getPhotos(@PathVariable("id") Long personId) {
-		return photoService.selectByPersonId(personId);
-	}
-
-	/**
-	 * 添加照片
-	 * 
-	 * @param appKey
-	 * @param personId
-	 * @param image
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "persons/{id}/photos", method = RequestMethod.POST)
-	public Object addPhoto(@NotEmpty @RequestHeader("appKey") String appKey, @PathVariable("id") Long personId,
-			String image, HttpServletResponse response) {
-		String[] ss = image.split(";"); // 格式：(后缀;Base64编码图片)
-		if (image.isEmpty() || ss.length != 2) {
-			return "文件为空";
-		}
-		// 获取文件的后缀名
-		String suffixName = ss[0];
-		if (!ArrayUtils.contains(SUFFIX_NAMES, suffixName)) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "格式错误";
-		}
-
-		App app = appService.selectByAppKey(appKey);
-		Person person = personService.selectById(personId);
-		if (person == null) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return "person不存在";
-		}
-		if (!person.getAppId().equals(app.getId())) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "只能访问自己的person";
-		}
-
-		// 保存到数据库
-		Photo p = new Photo();
-		p.setPersonId(personId);
-		p.setSuffixName(suffixName);
-		photoService.save(p);
-
-		// 获取文件名
-		String fileName = p.getId().toString() + p.getSuffixName();
+	
+	@RequestMapping(value = "compareBase64", method = RequestMethod.POST)
+	public Object compareBase64(@RequestBody Map<String, String> map) throws Exception {
+		String img1 = map.get("img1");
+		String img2 = map.get("img2");
 		
-		// 文件上传后的路径
-		String filePath = PHOTO_PATH + p.getPersonId() + "\\" + p.getId() + "." + p.getSuffixName();
+		byte[] bys1 = Base64.decodeBase64(img1);
+		
+		byte[] bys2 = Base64.decodeBase64(img2);
+		log.info("接收图片成功，大小img1：" + bys1.length + ", im2:" +bys2.length);
+		return compareByteArray(bys1, bys2);
+	}
+	
+	public Object compareByteArray(byte[] bys1, byte[] bys2) throws Exception{
+		long t1 = System.currentTimeMillis();
+		log.info("正在识别");
+		double dis = recognitionService.distance(bys1, bys2);
+		CommonResult<Double> result = new CommonResult<Double>(true, dis);
+		long t2 = System.currentTimeMillis();
+		log.info("识别成功,用时:" + (t2 - t1) + "ms, 结果：" + result.getData());
+		return result;
+	}
+	
+	@RequestMapping(value = "compareURL", method = RequestMethod.POST)
+	public Object CompareUrl(@RequestBody Map<String, String> map) throws Exception{
+		String img1Url = map.get("img1Url");
+		String img2Url = map.get("img2Url");
+		byte[] bys1 = networkService.getByteArrayByURL(img1Url);
+		byte[] bys2 = networkService.getByteArrayByURL(img2Url);
+		return compareByteArray(bys1, bys2);
+	}
+	
+	@RequestMapping(value = "group", method = RequestMethod.GET)
+	public Object getAllGroups(@RequestHeader String appKey) {
+		List<Group> groups = groupService.selectByAppKey(appKey);
+		CommonResult<List<Group>> result = new CommonResult<>(true, groups);
+		return result;
+	}
+	
+	@RequestMapping(value = "{groupId}/person", method = RequestMethod.GET)
+	public Object getGroupPersons(@NotNull @PathVariable Long groupId) throws APIException{
+		List<PersonWithPath> personWithPath = getGroupPersonWithPath(groupId);
+		CommonResult<List<PersonWithPath>> result = new CommonResult<>(true, personWithPath);
+		return result;
+	}
 
-		// 解决中文问题，liunx下中文路径，图片显示问题
-		// fileName = UUID.randomUUID() + suffixName;
-		File dest = new File(filePath);
-		// 检测是否存在目录
-		if (!dest.getParentFile().exists()) {
-			dest.getParentFile().mkdirs();
+	private List<PersonWithPath> getGroupPersonWithPath(Long groupId) throws APIException {
+		List<Person> persons = personService.selectByGroupId(groupId);
+		//校验权限
+		if (!persons.isEmpty()) {
+			if (!persons.get(0).getUserId().equals(SessionUtil.getCurrentUserId())) {
+				throw new APIException("禁止访问");
+			}
 		}
-		byte[] bys = Base64.decodeBase64(ss[1].getBytes());
+		List<PersonWithPath> personWithPath = personService.parseTo(RequestUtil.getRequest(), persons);
+		return personWithPath;
+	}
+	
+	@RequestMapping(value = "/person", method = RequestMethod.GET)
+	public Object getAllPersons(@RequestHeader String appKey) throws APIException{
+		List<PersonWithPath> list = getAllPersonWithPath(appKey);
+		
+		CommonResult<List<PersonWithPath>> result = new CommonResult<>(true, list);
+		return result;
+	}
 
+	private List<PersonWithPath> getAllPersonWithPath(String appKey) throws APIException {
+		List<Group> groupList = groupService.selectByAppKey(appKey);
+		List<PersonWithPath> list = new ArrayList<>();
+		for (Group g : groupList) {
+			List<PersonWithPath> pwpList = getGroupPersonWithPath(g.getId());
+			list.addAll(pwpList);
+		}
+		return list;
+	}
+	
+	@RequestMapping(value = "/find", method = RequestMethod.POST)
+	public Object find(@RequestHeader String appKey,@RequestBody FindForm form) throws APIException{
+		//不能同时为空，不同同时有值,if判断是数字逻辑不用深究
+		boolean bool1 = form.getImgBase64() != null;
+		boolean bool2 = form.getImgUrl() != null;
+		if ((bool1 && bool2) && !(bool1 || bool2)) {
+			//不满足
+			//同时为真或者同时为假
+			throw new APIException("URL和BASE64不能同时为空，也不能同时有值");
+		}
+		
+		//获取照片字节数组
+		byte[] unknowFaceBys = null;
+		if (form.getImgBase64() != null) {
+			unknowFaceBys = Base64.decodeBase64(form.getImgBase64());
+		} else {
+			try {
+				unknowFaceBys = networkService.getByteArrayByURL(form.getImgUrl());
+			} catch (IOException e) {
+				log.error("下载图片错误", e);
+				throw new APIException("无法从imgUrl下载图片");
+			}
+		}
+		
+		List<PersonWithPath> pwpList = null;
+		//构造Person照片放到List
+		if (form.getIsAllPerson()) {
+			pwpList = getAllPersonWithPath(appKey);
+		} else {
+			pwpList = new ArrayList<>();
+			List<Long> groupIdList = form.getGroupId();
+			
+			//用set去除重复
+			Set<Long> set = new HashSet<>();
+			for (Long id :groupIdList) {
+				set.add(id);
+			}
+			
+			//构造
+			for (Long id : set) {
+				pwpList.addAll(getGroupPersonWithPath(id));
+			}
+		}
+		
+		//去除没有照片的
+		for (int i = 0; i < pwpList.size(); i++) {
+			PersonWithPath pwp = pwpList.get(i);
+			if (pwp.getPaths() == null || pwp.getPaths().size() == 0) {
+				pwpList.remove(i);
+			}
+		}
+		
+		//获取照片路径
+		List<String> facePath = new ArrayList<>();
+		for (PersonWithPath pwp : pwpList) {
+			facePath.add(pwp.getPaths().get(0));
+		}
+		
+		//连接python服务器识别
+		Double[] distance;
 		try {
-			FileUtils.writeByteArrayToFile(dest, bys);
-			return "上传成功";
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		return "上传失败";
-	}
-
-	@RequestMapping(value = "persons/{id}/photos", method = RequestMethod.DELETE)
-	public Object deleteAllPhoto(@NotEmpty @RequestHeader("appKey") String appKey, @PathVariable("id") Long personId,
-			HttpServletResponse response) {
-		App app = appService.selectByAppKey(appKey);
-		Person person = personService.selectById(personId);
-		if (person == null) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return "person不存在";
-		}
-		if (!person.getAppId().equals(app.getId())) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "只能访问person不在该appkey中";
-		}
-
-		// 删除该personid所有的照片
-		Photo p = new Photo();
-		p.setPersonId(personId);
-		photoService.delete(p);
-		File file = new File(PHOTO_PATH + personId);
-		FileUtil.deleteContents(file);
-
-		return "删除成功";
-	}
-
-	@RequestMapping(value = "persons/{id}/recognition", method = RequestMethod.POST)
-	public Object recognition(@NotEmpty @RequestHeader("appKey") String appKey, @PathVariable("id") Long personId,
-			String image, HttpServletResponse response) {
-		//防止越权访问
-		App app = appService.selectByAppKey(appKey);
-		Person person = personService.selectById(personId);
-		if (person == null) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return "person不存在";
-		}
-		if (!person.getAppId().equals(app.getId())) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "只能访问person不在该appkey中";
-		}
-
-		Photo example = new Photo();
-		example.setPersonId(personId);
-		List<Photo> list = photoService.select(example);
-		List<PhotoData> photos = new ArrayList<>();
-		for (Photo p : list) {
-			PhotoData pd = new PhotoData();
-			String path = PHOTO_PATH + p.getPersonId() + "\\" + p.getId() + "." + p.getSuffixName();
-			pd.setPath(path);
-			pd.setSuffix(p.getSuffixName());
-			photos.add(pd);
+			distance = recognitionService.distance(facePath.toArray(new String[0]), unknowFaceBys);
+		} catch (RecognitionException e) {
+			log.error("连接python服务器发生异常", e);
+			throw new APIException("服务器异常");
 		}
 		
-		//img
-		String[] ss = image.split(";"); // 格式：(后缀;Base64编码图片)
-		PhotoData pd = new PhotoData();
-		pd.setSuffix(ss[0]);
-		pd.setImgBytes(Base64.decodeBase64(ss[1].getBytes()));
+		//对结果查找
+		//找到可能性最大的
+		double max = 0;
+		int maxIndex = -1;
+		for (int i = 0; i < distance.length; i++) {
+			if (distance[i] > max) {
+				maxIndex = i;
+				max = distance[i];
+			}
+		}
+		if (maxIndex == -1) {
+			//
+			return new CommonResult<>("没有找到");
+		}
 		
-		//TODO 识别
-		RecognitionData data = new RecognitionData();
-		data.setPersonId(personId);
-		data.setPhotos(photos);
-		data.setRecognitionPhoto(pd);
-		return recognitionService.recognize(data);
+		//找到目标任务
+		PersonWithPath targetPerson = pwpList.get(maxIndex);
+		//TODO 这里识别目标任务所有图片
+		
+		return new CommonResult<PersonWithPath>(true, targetPerson);
 	}
 }

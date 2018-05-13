@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
-<title>index</title>
+<title>appKey</title>
 <th:block th:replace="fragments/headTag :: headTag">
 	<!--======== Bootstrap 核心 CSS 文件 ========-->
 	<link rel="stylesheet" type="text/css"
@@ -65,7 +65,8 @@
 							th:onclick="|edit(${appkey.id}, '${appkey.appDesc}')|"
 							onclick="edit(1, '我的应用名字和类型')" id="editBtn" class="btn btn-info">修改应用描述</a>
 							<a th:onclick="|del(${appkey.id})|" href="#"
-							class="btn btn-info">删除</a></td>
+							class="btn btn-info">删除</a> <a  th:href="@{|/group/listByPage?appKey=${appkey.appKey}|}" href="#"
+							class="btn btn-info">编辑分组</a></td>
 					</tr>
 
 				</tbody>

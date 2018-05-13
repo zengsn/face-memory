@@ -1,7 +1,6 @@
 package top.it138.face.common;
 
 /**
- * Created by fo on 2017/2/6.
  */
 public class CommonValue {
     /**

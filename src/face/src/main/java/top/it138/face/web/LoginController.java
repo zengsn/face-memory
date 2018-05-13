@@ -1,15 +1,22 @@
 package top.it138.face.web;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import top.it138.face.annotation.LogBefore;
 import top.it138.face.common.CommonResult;
 import top.it138.face.entity.User;
 import top.it138.face.entity.UserRole;
@@ -27,11 +35,13 @@ import top.it138.face.service.MailService;
 import top.it138.face.service.UserRoleService;
 import top.it138.face.service.UserService;
 import top.it138.face.util.CapchaUtil;
+import top.it138.face.util.SessionUtil;
 import top.it138.face.util.UuidUtil;
 import top.it138.face.vo.UserRegistrationForm;
 
 @SessionAttributes(types=UserRegistrationForm.class)
 @Controller
+@Validated
 public class LoginController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
@@ -56,6 +66,7 @@ public class LoginController {
 		modelAndView.setViewName("login/login");
 		return modelAndView;
 	}
+	
 
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
 	public ModelAndView registration() {
@@ -67,6 +78,7 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
+	@Transactional
 	public ModelAndView createNewUser(@Valid @ModelAttribute("userForm") UserRegistrationForm userForm, BindingResult bindingResult,
 			HttpServletRequest request, SessionStatus status) {
 		//校验
@@ -120,7 +132,7 @@ public class LoginController {
 		userRole.setUserId(user.getId());
 		userRoleService.save(userRole);
 		
-		sendMail(user, request);
+		sendMail(user, request);   //发送激活邮件
 		
 		status.setComplete();
 		userForm = new UserRegistrationForm();
@@ -130,6 +142,29 @@ public class LoginController {
 		modelAndView.setViewName("login/registration");
 		
 		return modelAndView;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	@Transactional
+	@ResponseBody
+	public Object changePassword(@NotBlank String oldPassword, @NotBlank @Size(min=6, max=11) String password, @NotBlank String password2) {
+		User user = userService.selectById(SessionUtil.getCurrentUserId());
+		boolean isMatched = passwordEncoder.matches(oldPassword, user.getPassword());
+		if (!isMatched) {
+			return new CommonResult<>("密码错误修改失败");
+		}
+		if (!password.equals(password2)) {
+			return new CommonResult<>("两次密码不相同");
+		}
+		String newPass = passwordEncoder.encode(password);
+		user.setPassword(newPass);
+		userService.update(user);
+		
+		return new CommonResult<>(true, "修改成功，请重新登陆");
 	}
 
 	/**
@@ -152,6 +187,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping("/activateAccount")
+	@Transactional
 	public ModelAndView activateAccount(String code) {
 		ModelAndView mv = new ModelAndView("message/message");
 		

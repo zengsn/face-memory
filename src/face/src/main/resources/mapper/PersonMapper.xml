@@ -5,12 +5,15 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="person_code" jdbcType="VARCHAR" property="personCode" />
-    <result column="app_id" jdbcType="BIGINT" property="appId" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="identification" jdbcType="VARCHAR" property="identification" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="des" jdbcType="VARCHAR" property="des" />
+    <result column="birth" jdbcType="DATE" property="birth" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="identity" jdbcType="VARCHAR" property="identity" />
+    <result column="group_id" jdbcType="BIGINT" property="groupId" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
   </resultMap>
 </mapper>

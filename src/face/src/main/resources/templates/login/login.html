@@ -257,10 +257,10 @@ body, .form-bg {
 						</div>
 						<div class="form-group">
 							<div class="main-checkbox">
-								<input type="checkbox" value="None" id="checkbox1"
-									name="rememberMe" /> <label for="checkbox1"></label>
+								<input type="checkbox" id="checkbox1"
+									name="remember-me" /> <label for="checkbox1"></label>
 							</div>
-							<span class="text">Remember me</span>
+							<span class="text">下次自动登录</span>
 							<button type="submit" class="btn btn-lg btn-default">登录</button>
 						</div>
 					</form>
@@ -311,7 +311,7 @@ body, .form-bg {
 				rules : {
 					username : {
 						required : true,
-						minlength : 6,
+						minlength : 5,
 						maxlength : 11
 					},
 					password : {

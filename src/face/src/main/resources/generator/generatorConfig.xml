@@ -47,13 +47,18 @@
 		<table tableName="t_app" domainObjectName="App">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
+		<table tableName="t_user_role" domainObjectName="UserRole">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table> 
+		<table tableName="t_photo" domainObjectName="Photo">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
 		<table tableName="t_person" domainObjectName="Person">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
-		<table tableName="t_user_role" domainObjectName="UserRole">
-			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
-		</table> -->
-		<table tableName="t_photo" domainObjectName="Photo">
+		<table tableName="t_group" domainObjectName="Group">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+			<table tableName="t_log" domainObjectName="Log">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 	</context>

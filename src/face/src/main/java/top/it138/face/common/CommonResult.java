@@ -3,9 +3,6 @@ package top.it138.face.common;
 /**
  * HTTP请求返回JSON格式结果公共类
  *
- * @author panhainan
- * @version 1.0
- * @email panhainan@yeah.net
  */
 public class CommonResult<T> {
     public final static boolean SUCCESS = true;
@@ -23,8 +20,13 @@ public class CommonResult<T> {
      */
     private T data;
 
-    public CommonResult(boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public CommonResult() {
+        this.isSuccess = true;
+    }
+    
+    public CommonResult(T data) {
+        this.isSuccess = true;
+        this.data = data;
     }
 
     public CommonResult(boolean isSuccess, T data) {

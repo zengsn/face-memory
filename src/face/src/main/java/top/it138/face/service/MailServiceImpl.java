@@ -32,8 +32,8 @@ public class MailServiceImpl implements MailService {
 			helper.setText(text, true);
 			helper.setFrom(mailSender.getUsername());
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage());
 			return;
 		}
 		

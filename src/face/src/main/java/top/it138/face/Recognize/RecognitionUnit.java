@@ -1,8 +1,9 @@
 package top.it138.face.Recognize;
 
-import top.it138.face.dto.RecognitionData;
+import top.it138.face.exception.RecognitionException;
 
 public interface RecognitionUnit{
 	String getName();
-	Double recognize(RecognitionData data);
+	Double recognize(String face1Path, String face2Path) throws RecognitionException;
+	Double[] recognize(String[] compareFacesPath, String unknowFacePath) throws RecognitionException;
 }

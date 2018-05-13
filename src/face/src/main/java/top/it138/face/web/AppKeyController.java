@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +43,7 @@ public class AppKeyController {
 	
 	@RequestMapping("/edit")
 	@ResponseBody
+	@Transactional
 	public Object edit(String id, @NotBlank String appDesc) {
 		App app = appService.selectById(Long.parseLong(id));
 		User user = SessionUtil.getCurrentUser();
@@ -60,6 +62,7 @@ public class AppKeyController {
 	
 	@RequestMapping("/delete")
 	@ResponseBody
+	@Transactional
 	public Object delete(@NotBlank String id) {
 		App app = appService.selectById(Long.parseLong(id));
 		User user = SessionUtil.getCurrentUser();
@@ -76,6 +79,7 @@ public class AppKeyController {
 	
 	@RequestMapping(value="/add", method=RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public Object add(@NotBlank String appDesc) {
 		App app = new App();
 		app.setAppDesc(appDesc);

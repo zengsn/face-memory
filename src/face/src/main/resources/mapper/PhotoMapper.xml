@@ -7,8 +7,10 @@
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="person_id" jdbcType="BIGINT" property="personId" />
-    <result column="suffix_name" jdbcType="VARCHAR" property="suffixName" />
-    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="suffix" jdbcType="VARCHAR" property="suffix" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
   </resultMap>
 </mapper>
