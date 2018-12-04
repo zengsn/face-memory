@@ -1,0 +1,50 @@
+<!--pages/uncheck/uncheck.wxml-->
+<view class="page">
+  <view class="page__bd">
+    <view wx:if="{{abbr_url.length>0}}">
+      <view wx:for="{{abbr_url}}" wx:key="unique">
+        <view class="weui-panel__bd">
+          <view class="weui-panel weui-panel_access">
+
+            <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                <image class="weui-media-box__thumb" src="{{item}}" data-index="{{index}}" bindtap='previewImage' />
+              </view>
+              <navigator url="../detail/detail?id={{faceinfo[index].id}}&faceValue={{faceinfo[index].faceValue}}&age={{faceinfo[index].age}}&src={{pictures[index]}}">
+                <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                  <view class="weui-media-box__title">{{faceinfo[index].createtime}}</view>
+                  <view class="weui-media-box__desc">
+                    <text decode="{{true}}" space="{{true}}">颜值：{{faceinfo[index].faceValue}}\n 年龄：{{faceinfo[index].age}} &nbsp;&nbsp;&nbsp;</text>
+                    <!-- 健康值：{{faceinfo[index].healthValue}} -->
+                  </view>
+                </view>
+
+              </navigator>
+              <view class="father">
+                <button class="weui-btn mini-btn" type="primary" size="mini" bindtap="check"  data-index="{{index}}">查看</button>
+                <button class="weui-btn mini-btn" type="warn" size="mini" bindtap="deletePic" style="margin-top:2px" data-index="{{index}}">删除</button>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:elif="{{prompt=='您还没有拍过照片!'}}">
+      <view class="weui-loadmore weui-loadmore_line " style="width:75%">
+        <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
+          您没有未查看识别结果的照片！
+        </view> 
+        </view>
+        <view class="weui-loadmore weui-loadmore_line " style="width:75%">
+        <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
+          可在首页查看所有历史照片
+        </view>
+      </view>
+    </view>
+
+
+
+
+
+  </view>
+</view>
