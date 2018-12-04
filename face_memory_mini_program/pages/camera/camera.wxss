@@ -1,0 +1,69 @@
+/* pages/camera/camera.wxss */
+
+.image-pic {
+  width: 80%;
+  position: relative;
+  margin-left: 10%;
+  margin-top: 5%;
+}
+
+/* 识别结果 wxss */
+
+/* 以下不用了 */
+.table {
+  border: 2px solid darkgray;
+}
+
+.title {
+  height: 2rem;
+  margin-left: 2%;
+  position: relative;
+  padding-top: 10%;
+  color: darkgray;
+} 
+
+.tr {
+  display: flex;
+  width: 99%;
+  justify-content: center;
+  height: 3rem;
+  align-items: center;
+  border: 1px solid darkgray;
+}
+
+.bg-w {
+  background: snow;
+}
+
+/* .bg-g{
+  background: #E6F3F9;
+} */
+
+.th {
+  justify-content: center;
+  display: flex;
+  height: 3rem;
+  align-items: center;
+}
+
+.left {
+  width: 40%;
+  /* background: #36f; */
+  color: #000;
+}
+
+.right {
+  width: 60%;
+  color: #000;
+}
+
+/* 识别结果 wxss */
+
+/* 底部悬浮点赞按钮样式 */
+.bottom-cover{
+  width:50%; position:fixed; bottom:0; background:white; border-top: 1px solid darkgray
+}
+
+.bottom-cover-image{
+  width:25%; margin-left:37.5%;margin-top:5%; margin-bottom:5%
+}

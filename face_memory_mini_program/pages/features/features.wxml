@@ -1,0 +1,34 @@
+<!--pages/features/features.wxml-->
+<view class="page">
+  <!-- <view class="example" style='display:block'>
+     <view class="marquee_box">
+      <view class="marquee_text" style="{{orientation}}:{{marqueeDistance2}}px;font-size: {{size}}px; " >
+        <text>{{text}}</text>
+      <text wx:if="{{marquee2copy_status}}" style="margin-left:{{marquee2_margin}}px;">{{text}}</text>
+      </view>
+    </view> 
+      </view> -->
+      <!-- 通告栏 -->
+    <wux-notice-bar loop mode="closable" content="{{text}}" />
+
+  <view class="page__bd">
+  <view class="weui-grids">
+    <navigator url="../camera/camera" class="weui-grid" hover-class="weui-grid_active">
+      <image class="weui-grid__icon" src="../../image/camera_unselected.png" />
+      <view class="weui-grid__label">每日一拍</view>
+    </navigator>
+    <!-- <navigator url="../historyPhotos/historyPhotos" class="weui-grid" hover-class="weui-grid_active">
+      <image class="weui-grid__icon" src="../../image/history_unselected.png" />
+      <view class="weui-grid__label">历史照片</view>
+    </navigator> -->
+    <navigator url="../charts/charts" class="weui-grid" hover-class="weui-grid_active">
+      <image class="weui-grid__icon" src="../../image/trend.png" />
+      <view class="weui-grid__label">变化趋势</view>
+    </navigator>
+    <navigator url="../detectResult/detectResult" class="weui-grid" hover-class="weui-grid_active">
+      <image class="weui-grid__icon" src="../../image/result.png" />
+      <view class="weui-grid__label">识别结果</view>
+    </navigator>
+</view>
+  </view>
+</view>

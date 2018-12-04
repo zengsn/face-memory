@@ -1,0 +1,29 @@
+<!--pages/feedback/feedback.wxml-->
+<view class="page" style=''>
+  <view class="page__hd">
+    <view class="page__title" style='font-size:larger'>小程序使用反馈</view>
+  </view>
+  <view class="page__bd">
+
+    <view class="weui-cells__title">Email:</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请输入邮箱..." bindchange='inputEmail'/>
+        </view>
+      </view>
+    </view>
+    <view class="weui-cells__title">反馈内容</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
+          <textarea class="weui-textarea" maxlength="200" placeholder="请输入文本" style="height: 3.3em" bindinput='inputContent' />
+          <view class="weui-textarea-counter">0/200</view>
+        </view>
+      </view>
+    </view>
+    <view class="weui-btn-area">
+      <button class="weui-btn" type="primary" bindtap="commitTips">确定</button>
+    </view>
+  </view>
+</view>

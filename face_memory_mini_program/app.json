@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/camera/camera",
+    "pages/charts/charts",
+    "pages/setting/setting",
+    "pages/feedback/feedback",
+    "pages/detail/detail",
+    "pages/welcome/welcome",
+    "pages/features/features",
+    "pages/detectResult/detectResult",
+    "pages/historyPhotos/historyPhotos",
+    "pages/announcement/announcement"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1aad19",
+    "navigationBarTitleText": "记脸知己",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#eeeeee"
+  },
+  "tabBar": {
+    "color": "black",
+    "selectedColor": "#1aad19",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "position": "bottom",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/image/index_unselected_1.png",
+        "selectedIconPath": "/image/index_selected_1.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/features/features",
+        "iconPath": "/image/feature.png",
+        "selectedIconPath": "/image/feature_selected.png",
+        "text": "发现"
+      },
+      {
+        "pagePath": "pages/setting/setting",
+        "iconPath": "/image/my.png",
+        "selectedIconPath": "/image/my_selected.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "debug":false
+}

@@ -1,0 +1,30 @@
+<!--pages/announcement/announcement.wxml-->
+<!-- <view style='height:10rpm'></view>
+<view class="weui-panel" style='background:#F8F8F8'>
+      <view class="weui-panel__hd">文字列表附来源</view>
+  <view class="weui-panel__bd">
+    <view class="weui-media-box weui-media-box_text">
+        <view class="weui-media-box__title weui-media-box__title_in-text"> 标题 </view>
+      <view class="weui-media-box__desc">第一次拍摄识别比较慢，请耐心等待! 请勿拍摄不含人脸照片, 系统不识别保存不含人脸的照片.</view>
+      <view class="weui-media-box__info">
+        <view class="weui-media-box__info__meta">2018/10/21 18:19:00</view>
+      </view>
+    </view>
+  </view>
+</view> -->
+
+
+<view wx:for="{{announcements}}" wx:key="unique">
+  <view style='height:10rpm'></view>
+  <view class="weui-panel" style='background:#F8F8F8'>
+    <!-- <view class="weui-panel__hd">文字列表附来源</view> -->
+    <view class="weui-panel__bd">
+      <view class="weui-media-box weui-media-box_text">
+        <view class="weui-media-box__desc">{{announcements[index].content}}</view>
+        <view class="weui-media-box__info">
+          <view class="weui-media-box__info__meta">{{announcements[index].createtime}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

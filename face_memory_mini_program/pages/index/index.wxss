@@ -1,0 +1,106 @@
+/**index.wxss**/
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  /* margin: 20rpx; */
+  border-radius: 50%;
+
+}
+
+.view-avatar{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
+
+/*********************************/
+.my-weui-navbar{display:-webkit-box;display:-webkit-flex;display:flex;position:absolute;z-index:500;top:0;width:100%;border-top:1rpx solid #ccc}
+.weui-navbar__item{position:relative;display:block;-webkit-box-flex:1;-webkit-flex:1;flex:1;padding:13px 0;text-align:center;font-size:0}
+.weui-navbar__item.weui-bar__item_on{color:#1aad19}
+.weui-navbar__slider{position:absolute;content:" ";left:0;top:0;width:6em;height:3px;background-color:#1aad19;-webkit-transition:-webkit-transform .3s;transition:-webkit-transform .3s;transition:transform .3s;transition:transform .3s,-webkit-transform .3s}
+.weui-navbar__title{display:inline-block;font-size:15px;max-width:8em;width:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal}
+
+
+/***************历史照片页：start ********************/
+
+.faceinfo-bubble {
+  width: 256rpx;
+  height: 256rpx;
+  /* margin: 20rpx; */
+  border-radius: 50%;
+}
+
+.tr {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  height: 3rem;
+  align-items: center;
+}
+
+.th {
+  justify-content: center;
+  display: flex;
+  height: 3rem;
+  align-items: center;
+  font-size: 18rpx;
+}
+
+.left {
+  width: 50%;
+  background: white;
+  color: #000;
+  border-right: 1px solid darkgray;
+}
+
+.right {
+  width: 50%;
+  color: #000;
+  border-left: 1px solid darkgray;
+}
+/*********************************/
+
+.text {
+  width: 70%;
+  color: black;
+  background: #1AAD19;
+  border-radius: 5% 5% 5% 5%;
+padding-left: 10rpx;
+}
+
+.bot_left {
+  margin-top: 10%;
+  border-width: 18rpx;
+  border-style: solid;
+  border-color: #fff #fff #1AAD19 #1AAD19;
+}
+
+.bot_right {
+  margin-top: 10%;
+  border-width: 18rpx;
+  border-style: solid;
+  border-color: #fff #1AAD19 #1AAD19 #fff;
+}
+
+/***************历史照片页：end   ********************/
+
+.prompt {
+  text-align:center;
+  margin: auto;
+  line-height: 50px
+}
