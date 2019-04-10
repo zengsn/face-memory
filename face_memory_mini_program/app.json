@@ -1,50 +1,55 @@
 {
-  "pages": [
-    "pages/index/index",
-    "pages/camera/camera",
-    "pages/charts/charts",
-    "pages/setting/setting",
-    "pages/feedback/feedback",
-    "pages/detail/detail",
-    "pages/welcome/welcome",
-    "pages/features/features",
-    "pages/detectResult/detectResult",
-    "pages/historyPhotos/historyPhotos",
-    "pages/announcement/announcement"
-  ],
-  "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#1aad19",
-    "navigationBarTitleText": "记脸知己",
-    "navigationBarTextStyle": "white",
-    "backgroundColor": "#eeeeee"
-  },
-  "tabBar": {
-    "color": "black",
-    "selectedColor": "#1aad19",
-    "backgroundColor": "#fff",
-    "borderStyle": "black",
-    "position": "bottom",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "iconPath": "/image/index_unselected_1.png",
-        "selectedIconPath": "/image/index_selected_1.png",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/features/features",
-        "iconPath": "/image/feature.png",
-        "selectedIconPath": "/image/feature_selected.png",
-        "text": "发现"
-      },
-      {
-        "pagePath": "pages/setting/setting",
-        "iconPath": "/image/my.png",
-        "selectedIconPath": "/image/my_selected.png",
-        "text": "我的"
-      }
-    ]
-  },
-  "debug":false
+    "pages": [
+        
+        "pages/index/index",
+        "pages/history/history",
+        "pages/features/features",
+        "pages/setting/setting",
+        "pages/came/came",
+        "pages/charts/charts",
+        "pages/detail/detail",
+        "pages/detectResult/detectResult",
+        "pages/feedback/feedback",
+        "pages/announcement/announcement",
+        "pages/aboutus/aboutus",
+        "pages/toMini/toMini"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#1aad19",
+        "navigationBarTitleText": "记脸知己",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#dedede"
+    },
+    "tabBar": {
+        "color": "#000000",
+        "selectedColor": "#1aad19",
+        "backgroundColor": "#fff",
+        "borderStyle": "black",
+        "position": "bottom",
+        "list": [
+            {
+                "pagePath": "pages/history/history",
+                "iconPath": "/image/index_unselected_1.png",
+                "selectedIconPath": "/image/index_selected_1.png",
+                "text": "首页"
+            },
+            {
+                "pagePath": "pages/features/features",
+                "iconPath": "/image/feature.png",
+                "selectedIconPath": "/image/feature_selected.png",
+                "text": "发现"
+            },
+            {
+                "pagePath": "pages/setting/setting",
+                "iconPath": "/image/my.png",
+                "selectedIconPath": "/image/my_selected.png",
+                "text": "我的"
+            }
+        ]
+    },
+    "navigateToMiniProgramAppIdList": [
+        "wxab55adbdaabf555c"
+    ],
+    "debug": false
 }

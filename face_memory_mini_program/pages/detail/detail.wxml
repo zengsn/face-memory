@@ -1,96 +1,66 @@
 <!--pages/detial/detail.wxml-->
-  <image mode="aspectFit" src="{{src}}" class='image-pic'></image>
+<image mode="aspectFit" src="{{src}}" class='image-pic'></image>
 <view class="page" style='margin-top: 20px'>
-  <view class="page__bd">
+    <view class="page__bd">
 
-    <view class="weui-panel weui-panel_access">
-      <view class="weui-panel__hd">该图片识别结果</view>
-      <view class="weui-panel__bd">
-      
-        <view class="weui-cell">
-          <view class="weui-cell__hd ">
-            <view class="weui-label">颜值</view>
-          </view>
-          <view class="weui-cell__bd">
-            <view class="weui-label">{{face_value}}</view>
-          </view>
-        </view>
-        <view class="weui-cell">
-          <view class="weui-cell__hd">
-            <view class="weui-label">年龄</view>
-          </view>
-          <view class="weui-cell__bd">
-            <view class="weui-label">{{age}}</view>
-          </view>
-        </view>
-        <view class="weui-cell">
-          <view class="weui-cell__hd">
-            <view class="weui-label">心情</view>
-          </view>
-          <view class="weui-cell__bd">
-            <view class="weui-label">{{emotion}}</view>
-          </view>
-        </view>
-        <view class="weui-cell">
-          <view class="weui-cell__hd">
-            <view class="weui-label">色斑系数</view>
-          </view>
-          <view class="weui-cell__bd">
-            <view class="weui-label">{{stain}}</view>
-          </view>
-        </view>
-        <view class="weui-cell">
-          <view class="weui-cell__hd">
-            <view class="weui-label">青春痘系数</view>
-          </view>
-          <view class="weui-cell__bd">
-            <view class="weui-label">{{acne}}</view>
-          </view>
-        </view>
-        <view class="weui-cell">
-          <view class="weui-cell__hd">
-            <view class="weui-label">黑眼圈系数</view>
-          </view>
-          <view class="weui-cell__bd">
-            <view class="weui-label">{{dark_circle}}</view>
-          </view>
-        </view>
+        <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__hd">该图片识别结果</view>
+            <view class="weui-panel__bd">
 
-        <!-- <view class="table">
-          <view class="tr bg-w">
-            <view class="th left">颜值</view>
-            <view class="th right">{{face_value}}</view>
-          </view>
-          <view class="tr bg-w">
-            <view class="th left">年龄</view>
-            <view class="th right">{{age}}</view>
-          </view>
-          <view class="tr bg-w">
-            <view class="th left">心情</view>
-            <view class="th right">{{emotion}}</view>
-          </view>
-          <view class="tr bg-w">
-            <view class="th left">色斑系数</view>
-            <view class="th right">{{stain}}</view>
-          </view>
-          <view class="tr bg-w">
-            <view class="th left">青春痘系数</view>
-            <view class="th right">{{acne}}</view>
-          </view>
-          <view class="tr bg-w">
-            <view class="th left">黑眼圈系数</view>
-            <view class="th right">{{dark_circle}}</view>
-          </view>
-        </view> -->
-
-        <!-- <cover-view class='bottom-cover' style='border-right:0px'>
-          <cover-image bindtap="great" src='../../image/great.png' mode="aspectFit" class='bottom-cover-image' id='1' style='margin-right:0px;margin-bottom:42.5%' ></cover-image>
-          <cover-image bindtap="choose" src='../../image/more.png' mode="aspectFit" class='bottom-cover-image' id='1' style='margin-right:0px;margin-bottom:5%'></cover-image>
-          <cover-image bindtap="bad" src='../../image/bad.png' mode="aspectFit" class='bottom-cover-image' id='1' style='margin-right:37.5%;margin-bottom:5%'></cover-image>
-        </cover-view> -->
-      </view>
+                <view class="weui-cell">
+                    <view class="weui-cell__hd ">
+                        <view class="weui-label">颜值</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <view class="weui-label">{{face_value}}</view>
+                    </view>
+                </view>
+                <view class="weui-cell">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">年龄</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <view class="weui-label">{{age}}</view>
+                    </view>
+                </view>
+                <view class="weui-cell">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">心情</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <view class="weui-label">{{emotion}}</view>
+                    </view>
+                </view>
+                <view class="weui-cell">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">色斑系数</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <view class="weui-label">{{stain}}</view>
+                    </view>
+                </view>
+                <view class="weui-cell">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">青春痘系数</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <view class="weui-label">{{acne}}</view>
+                    </view>
+                </view>
+                <view class="weui-cell">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">黑眼圈系数</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <view class="weui-label">{{dark_circle}}</view>
+                    </view>
+                </view>
+            </view>
+        </view>
     </view>
-  </view>
 </view>
+<!-- <view class="container-chart"> 
+  <canvas canvas-id="radarCanvas" class="canvas" style="margin-top:30px;"></canvas>
+</view> -->
 
 <wux-floating-button id="wux-floating-button" visible="{{ visible }}" position="{{ position }}" theme="{{ theme }}" buttons="{{ buttons }}" bind:change="bindchange" bind:click="buttonClicked" />

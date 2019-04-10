@@ -1,0 +1,16 @@
+<view class="page">
+    <view class="page__hd top">
+        <view class="page__title"><image src="../../image/aboutus.png" class="icon-item"></image> 关于作者</view>
+        <view class="page__desc">本小程序由惠州学院信息科学技术学院的师生共同研发</view>
+    </view>
+    <view class="page__bd">
+        <wux-cell-group title="作者">
+            <wux-cell thumb="../../image/emoji-1.png" title="Jashon" extra="730283774@qq.com"></wux-cell>
+            <wux-cell thumb="../../image/emoji-1.png" title="ZSN" extra="公众号：WeScholar"></wux-cell>
+        </wux-cell-group>
+        
+        <view class="weui-btn-area">
+          <button class="weui-btn" type="primary" bindtap='openMinimsger'>通过“小留言板”联系我们</button>
+        </view>    
+    </view>
+</view>

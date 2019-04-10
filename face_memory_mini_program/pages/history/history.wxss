@@ -1,0 +1,45 @@
+/**index.wxss**/
+
+/***************历史照片页：start ********************/
+
+.faceinfo-bubble {
+  width: 256rpx;
+  height: 256rpx;
+  /* margin: 20rpx; */
+  border-radius: 50%;
+}
+
+.tr {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  height: 3rem;
+  align-items: center;
+}
+
+.th {
+  justify-content: center;
+  display: flex;
+  height: 3rem;
+  align-items: center;
+  font-size: 18rpx;
+}
+
+/*********************************/
+
+.text {
+  width: 70%;
+  color: black;
+  background: #1AAD19;
+  border-radius: 5% 5% 5% 5%;
+padding-left: 10rpx;
+}
+
+
+/***************历史照片页：end   ********************/
+
+.prompt {
+  text-align:center;
+  margin: auto;
+  line-height: 50px
+}
