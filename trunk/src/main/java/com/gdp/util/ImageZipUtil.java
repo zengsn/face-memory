@@ -11,11 +11,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImageZipUtil {
 
-	private static Logger logger = Logger.getLogger(ImageZipUtil.class);
+	private static Logger logger = LoggerFactory.getLogger(ImageZipUtil.class);
 	
 	/**
 	 * <p>Title: thumbnailImage</p>
@@ -28,7 +29,7 @@ public class ImageZipUtil {
 	 * @param force		是否强制按照宽高生成缩略图(如果为false，则生成最佳比例缩略图)
 	 * @return
 	 */
-	public static  void thumbnailImage(String imgPath, String outImg, String format, int w, int h, boolean force) {
+	public static void thumbnailImage(String imgPath, String outImg, String format, int w, int h, boolean force) {
 		
 		logger.info("压缩照片： imgPath:" + imgPath);
 		logger.info("压缩照片： outImg:" + outImg);
@@ -99,7 +100,7 @@ public class ImageZipUtil {
 	*/
 	public static void main(String[] args) {
 //		File imgFile = new File("C:\\Users\\73028\\Desktop\\201809281751.gif");
-		thumbnailImage("C:\\Users\\73028\\Desktop\\201809281751.gif", "C:\\Users\\73028\\Desktop\\dog.jpg", "JPG",72, 72, false);
+//		thumbnailImage("C:\\Users\\73028\\Desktop\\201809281751.gif", "C:\\Users\\73028\\Desktop\\dog.jpg", "JPG",72, 72, false);
 		
 	}
 	

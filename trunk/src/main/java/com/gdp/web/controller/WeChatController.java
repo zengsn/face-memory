@@ -5,19 +5,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.gdp.pojo.OpenIdVO;
+import com.gdp.util.AESUtil;
 import com.gdp.util.HttpRequestUtil;
-import com.gdp.util.LogUtils;
 import com.gdp.util.ParaUtil;
 import com.gdp.util.RealPathUtils;
 
@@ -27,7 +23,7 @@ import com.gdp.util.RealPathUtils;
  * @author Jashon
  * @since 2018-09-02
  */
-@Controller
+@RestController
 @RequestMapping("/wx")
 public class WeChatController {
 
@@ -35,7 +31,10 @@ public class WeChatController {
 		// 实例化对象到内存
 		new RealPathUtils();
 	}
-	private Logger logger = Logger.getLogger(WeChatController.class);
+
+	private Logger logger = LoggerFactory.getLogger(WeChatController.class);
+	
+
 	/**
 	 * 获取微信用户的openid唯一标识
 	 * 
@@ -43,53 +42,25 @@ public class WeChatController {
 	 * @return
 	 */
 	@RequestMapping("/getOpenId")
-	@ResponseBody
 	public Map<String, Object> getOpendId(String code, HttpServletRequest request){
 		
 		HashMap<String, Object> res = new HashMap<String, Object>();
-		logger.info("---> code :" + code);
 		// 发送获取 openid 的请求
 		String reString = requestOpenId(code);
-		// 打印请求openID返回值
-		logger.info("\n request OPENID code return : " + reString);
-		
+
 		// 解析请求的返回值, 转成json再使用对象进行封装
 		JSON json = JSON.parseObject(reString);
 		
 		OpenIdVO openIdVO = JSON.toJavaObject(json, OpenIdVO.class);
-		String openid = openIdVO.getOpenid();
+		String openid = openIdVO.getOpenid();	// 用户小程序唯一表示openid
 		if(openid == null) {
 			res.put("openid", "request at fault");
 		} else {
-			// 获取 Subject
-			Subject currentUser = SecurityUtils.getSubject();
-
-			// 判断是否已经由登陆过账户，是的话直接返回登陆成功
-			if(currentUser.getSession().getAttribute("openid") != null) {
-				res.put("result", "succeed");
-			} else {
-				if(!currentUser.isAuthenticated()) {
-					System.out.println("--> wxlogin: !currentUser.isAuthenticated()");
-					currentUser.getSession().setAttribute("role", "wx");
-					// 将登陆的 openid 和密码封装成 token
-					UsernamePasswordToken token = new UsernamePasswordToken(openid, "123");
-
-					try {
-						// 执行登录
-						currentUser.login(token);
-						// 记住我
-						token.setRememberMe(true);
-						res.put("result", "succeed");
-					} catch (AuthenticationException ae) {
-						logger.error("---> 登录失败: " + ae.getMessage());
-						res.put("result", "failed_token_wrong");
-					}
-				}
-			}
-
-			logger.info("--> 返回openid");
-			request.getSession().setAttribute("openid", openid);
-			res.put("openid", openid);
+			String token = AESUtil.encrypt(openid, "openid");
+			String role = AESUtil.encrypt("user", "role");
+			res.put("role", role);		// 后续存放于 小程序请求header 中用于区分是用户还是管理员
+			res.put("token", token);	// 登录权限 标识, 写于小程序内存, 请求时带在 header 中
+			res.put("result", "succeed");
 		}
 
         return res;
@@ -97,7 +68,7 @@ public class WeChatController {
 	
 	
 	/**
-	 * 发送请求获取 openid和session_key
+	 * 发送请求获取 openid 和 session_key
 	 * 请求结果： {"session_key":"hZ4XJ2008TSpUEyYEwv7Fw==","openid":"o7uNr5ZOT-MWxK93SRQ5sUe00tQE"}
 	 * 
 	 * @param code
@@ -112,9 +83,10 @@ public class WeChatController {
         					+ "&js_code=" + code + "&grant_type=authorization_code";
         
         result = HttpRequestUtil.sendPost(url, params);
-        logger.info("发送请求获取 openid和session_key 请求结果" + result);
+        logger.info("发送请求获取 openid 和 session_key 请求结果" + result);
         
         return result;
 	}
 	
+
 }

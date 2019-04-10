@@ -16,10 +16,10 @@
             <property name="helperDialect" value="mysql"/>
         </plugin>
     </plugins>
-    
+
     <mappers>
         <!-- 通过扫描包的方式来进行批量加载映射文件 -->
-        <package name="com.gdp.mapper"/>
+        <!-- <package name="mappers"/> -->
     </mappers>
 
 </configuration>

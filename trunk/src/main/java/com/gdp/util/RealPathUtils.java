@@ -1,5 +1,8 @@
 package com.gdp.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 初始化 uploads 文件夹在本地磁盘的路径 
  * 
@@ -8,25 +11,23 @@ package com.gdp.util;
  */
 public class RealPathUtils {
 
+	private static Logger logger = LoggerFactory.getLogger(RealPathUtils.class);
+
+//	@Value("jdbc.url")
 	public static String uploadsPath = "";
 	
 	static  {
 		// 获取 项目根目录 在磁盘中的实际路径
 		String url = Thread.currentThread().getContextClassLoader().getResource("../../").getPath();
-//		url = url.replaceFirst("/", "");
+
 		if (url.contains("facememory")) {
 			uploadsPath = url.replace("facememory", "uploads");			
 		} else {
 			uploadsPath = url.replace("ROOT", "uploads");
 		}
-		LogUtils.logger.info("[RealPathUtils] \n uploads 文件夹的真实路径: " + uploadsPath);
+		logger.info("uploads 文件夹的真实路径: " + uploadsPath);
 	}
-/** 旧方法	
-	// 服务器端项目根目录的本地路径
-	  String rootpath = request.getSession().getServletContext().getRealPath("/");
-//-->	// 获取服务器 uploads/ 本地路径
-	  String path =  rootpath.replace("facememory", "uploads");
-*/
+
 
     /**
      * 测试用主函数, 没有实际用途

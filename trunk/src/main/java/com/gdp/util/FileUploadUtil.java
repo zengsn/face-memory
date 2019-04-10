@@ -1,21 +1,18 @@
 package com.gdp.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 文件上传工具类
@@ -25,7 +22,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  */
 public class FileUploadUtil {
 	
-//	private static Logger logger = Logger.getLogger(FileUploadUtil.class);
+	private static Logger logger = LoggerFactory.getLogger(FileUploadUtil.class);
 
 	/**
 	 * 上传照片到服务器
@@ -35,16 +32,16 @@ public class FileUploadUtil {
 	 * @throws UnsupportedEncodingException
 	 */
     public static Map<String, Object> fileUpload(HttpServletRequest request) throws UnsupportedEncodingException{
+    	
+    	String openid = AESUtil.decrypt(request.getHeader("token"), "openid");
+    	
     	request.setCharacterEncoding("utf-8");  // 设置编码
     	HashMap<String, Object> map = new HashMap<String, Object>();
     	String value = "";	// 存放 wxid
     	
     	// 获取文件需要上传到的本地路径
-//        String rootpath = request.getSession().getServletContext().getRealPath("/");
-//        String path = rootpath.replace("facememory", "uploads");
-//        System.out.println(path + "\n");
         String path = RealPathUtils.uploadsPath;
-        LogUtils.logger.info("[FileUploadUtil.fileUpload] path: " + path);
+        logger.info("path: " + path);
         
         // 获得磁盘文件条目工厂
         DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -68,13 +65,15 @@ public class FileUploadUtil {
                 //获取用户具体输入的字符串
                 value = item.getString();
                 request.setAttribute(name, value);
-                LogUtils.logger.info("[FileUploadUtil.fileUpload] \n - name 和 value: " + name + "-" + value); 
-                path = path + value + "/";
+                logger.info("\n - name 和 value: " + name + "-" + value);
+//                path = path + value + "/";
             } else {
                 picture = item;
             }
         }
         
+        // 从请求头中取出 openid 
+        path = path + openid + "/";
     	File dir = new File(path);
         // 判断目标文件夹是否存在，若不存在则新建
         if (!dir.exists()) {
@@ -101,7 +100,7 @@ public class FileUploadUtil {
         String destPath = path + fileName;
 
         // 写到的本地磁盘的位置
-        LogUtils.logger.info("[FileUploadUtil.fileUpload]\n ---> destpath: " + destPath);
+//        logger.info("[FileUploadUtil.fileUpload]\n ---> destpath: " + destPath);
 //	            logger.debug("destPath=" + destPath);
 
         // 真正写到磁盘上
@@ -120,11 +119,11 @@ public class FileUploadUtil {
 	        in.close();
 	        out.close();
 	        map.put("isSuccess", true);
-	        map.put("picPath", value + "/" + fileName);
-	        map.put("openid", value);
+	        map.put("picPath", openid + "/" + fileName);
+	        map.put("openid", openid);
         } catch (Exception e) {
-        	System.out.println(e);
         	map.put("isSuccess", false);
+        	e.printStackTrace();
         }
 		return map;
         

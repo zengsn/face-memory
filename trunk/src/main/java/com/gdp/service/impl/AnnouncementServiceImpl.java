@@ -1,48 +1,43 @@
 package com.gdp.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
-import com.gdp.entity.Announcement;
-import com.gdp.entity.AnnouncementExample;
-import com.gdp.mapper.AnnouncementMapper;
-import com.gdp.service.AnnouncementService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.gdp.base.BaseServiceImpl;
+import com.gdp.entity.Announcement;
+import com.gdp.mapper.AnnouncementMapper;
+import com.gdp.service.AnnouncementService;
 
-/**
- * @author Jashon
- * @since 2018-10-21
- */
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
 @Service("announcementService")
-public class AnnouncementServiceImpl implements AnnouncementService{
+public class AnnouncementServiceImpl extends BaseServiceImpl<AnnouncementMapper, Announcement> implements AnnouncementService {
 
-    @Autowired
-    private AnnouncementMapper announcementMapper;
+	@Autowired
+	private AnnouncementMapper announcementMapper;
 
-    @Override
-    public List<Announcement> selectAll() {
-        AnnouncementExample announcementExample = new AnnouncementExample();
-        announcementExample.setOrderByClause("priority asc, createtime desc");
-        AnnouncementExample.Criteria criteria = announcementExample.createCriteria();
-        List<Announcement> lists = this.announcementMapper.selectByExample(announcementExample);
-        return lists;
-    }
-
-    @Override
-    public int saveAnnouncement(Announcement announcement) {
-        int i = this.announcementMapper.insertSelective(announcement);
-        return i;
-    }
-
-    @Override
-    public List<Announcement> listAnnouncementByPriority(Integer priority) {
-        AnnouncementExample announcementExample = new AnnouncementExample();
-        announcementExample.setOrderByClause("createtime desc");
-        AnnouncementExample.Criteria criteria = announcementExample.createCriteria();
-        criteria.andPriorityEqualTo(priority);
-        return this.announcementMapper.selectByExample(announcementExample);
-    }
+	@Override
+	public List<Announcement> selectAllWithOrder() {
+        Example example = new Example(Announcement.class);
+        example.setOrderByClause("priority asc, createtime desc");
+        return this.announcementMapper.selectByExample(example);
+	}
+	
+	@Override
+	public List<Announcement> listAnnouncementByPriority(Integer priority) {
+		Example example = new Example(Announcement.class);
+		Criteria criteria = example.createCriteria();
+		example.setOrderByClause("createtime desc");
+		
+		// property 是实体类的属性名, value 是属性值
+        criteria.andEqualTo("priority", priority);
+        return this.announcementMapper.selectByExample(example);
+	}
 
 
+
+	
 }

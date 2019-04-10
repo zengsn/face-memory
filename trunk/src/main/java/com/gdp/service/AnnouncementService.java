@@ -1,28 +1,20 @@
 package com.gdp.service;
 
-import com.gdp.entity.Announcement;
-
 import java.util.List;
 
-/**
- * 公告服务类
- */
-public interface AnnouncementService {
+import com.gdp.base.BaseService;
+import com.gdp.entity.Announcement;
 
-    /**
-     * 查出所有公告
-     *
-     * @return
-     */
-    public List<Announcement> selectAll();
+import tk.mybatis.mapper.common.Mapper;
 
-    /**
-     * 添加一条公告
-     *
-     * @param announcement
-     * @return
-     */
-    public int saveAnnouncement(Announcement announcement);
+public interface AnnouncementService extends BaseService<Mapper<Announcement>, Announcement> {
+	
+	/**
+	 * 有顺序的查找所有公告
+	 * 
+	 * @return
+	 */
+	public List<Announcement> selectAllWithOrder();
 
     /**
      * 查找指定优先级的公告

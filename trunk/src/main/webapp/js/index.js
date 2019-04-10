@@ -1,7 +1,7 @@
 // 点击主页 -> 相片管理
 $('#pic_manage').click(function (){
-
-    $('#content_iframe').attr("src", "photo_manage.html");
+    // 后面加入日期, 是的 iframe 不缓存
+    $('#content_iframe').attr("src", "photo_manage.html?" + (new Date()).getTime());
 
     // 显示内容到主内容框中
     // var str =
@@ -25,5 +25,16 @@ $('#pic_manage').click(function (){
 
 // 点击主页 -> 反馈管理
 $('#feedback_manage').click(function (){
-    $('#content_iframe').attr("src", "feedback.html");
-})
+    $('#content_iframe').attr("src", "feedback.html?" + (new Date()).getTime());
+});
+
+// 点击主页 -> 公告管理管理
+$('#announcement_manage').click(function (){
+    $('#content_iframe').attr("src", "announce.html?" + (new Date()).getTime());
+});
+
+
+// 点击主页 -> 系统设置
+$('#system_setting').click(function (){
+    $('#content_iframe').attr("src", "feedback.html?" + (new Date()).getTime());
+});
