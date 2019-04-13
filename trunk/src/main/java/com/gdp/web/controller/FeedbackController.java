@@ -1,18 +1,19 @@
 package com.gdp.web.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
+import com.gdp.entity.Feedback;
+import com.gdp.service.FeedbackService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gdp.entity.Feedback;
-import com.gdp.service.FeedbackService;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 小程序反馈控制器
@@ -24,7 +25,7 @@ import com.gdp.service.FeedbackService;
 @RequestMapping("/feedback")
 public class FeedbackController {
 
-    private Logger logger = Logger.getLogger(FeedbackController.class);
+    private Logger logger = LoggerFactory.getLogger(FeedbackController.class);
 
 	@Autowired
 	private FeedbackService feedbackService;
@@ -42,17 +43,18 @@ public class FeedbackController {
 	public Map<String, Object> save(String email, String content, @RequestParam(value = "wxid", required = false) String wxid){
 		Map<String, Object> res = new HashMap<>();
 		Feedback feedback = new Feedback();
-		if (wxid == null){
+		if (wxid != null){
             feedback.setWxid(wxid);
         } else {
-		    logger.info(" -- > wxid 为空, 可能用户端访问服务端失败!");
+		    logger.info("wxid 为空, 可能客户端获取 openid 失败!");
         }
 		feedback.setEmail(email);
 		feedback.setContent(content);
-		feedback.setCreatetime(new Date(System.currentTimeMillis()));
+		feedback.setCreatetime(Date.from(Instant.now()));
 		
 		int i = feedbackService.saveFeedback(feedback);
-		if(i>0) {
+		System.out.println("反馈id: " + feedback.getId());
+		if(i > 0) {
 			res.put("result", "succeed");
 		}
 		

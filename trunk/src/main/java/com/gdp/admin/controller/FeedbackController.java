@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.gdp.entity.Feedback;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.gdp.entity.Feedback;
 import com.gdp.service.FeedbackService;
-import com.gdp.util.LogUtils;
 import com.github.pagehelper.Page;
 
 /**
@@ -27,7 +27,7 @@ import com.github.pagehelper.Page;
 @RequestMapping("/admin")
 public class FeedbackController {
 
-	private Logger logger = LogUtils.logger;
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	private FeedbackService feedbackService;
@@ -50,14 +50,48 @@ public class FeedbackController {
 		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(list);
 
 		// 利用分页插件获取反馈数据总页数
-		int total = ((Page<Feedback>) list).getPages();
-		logger.info("[FeedbackController.listFeedback] \n ---> 反馈数据列表总页码：" + total);
+		int totalPage = ((Page<Feedback>) list).getPages();
+		logger.info("-> 反馈数据列表总页码：" + totalPage);
+		long count = ((Page<Feedback>) list).getTotal();
 
 		// 以下各返回参数为 layui 前端框架所需参数
 		map.put("code", 0);
 		map.put("msg", "");
-		map.put("count", total);
+		map.put("count", count);	// 数据总数
 		map.put("data", jsonArray);
 		return map;
+	}
+
+	/**
+	 * 删除指定 id 的反馈信息
+     *
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping("/deleteFeedback")
+	@ResponseBody
+	public Map<String, Object> deleteFeedback(@RequestParam(value = "ids", required = false) int [] ids) {
+		Map<String, Object> modelMap = new HashMap<>();
+		logger.info("ids: {}", ids);
+		if (ids == null){
+            modelMap.put("success", false);
+            modelMap.put("code", "-1");
+            modelMap.put("data", "");
+            modelMap.put("resultMsg", "ids 不能为空");
+            return modelMap;
+        }
+
+        int i = this.feedbackService.deleteFeedback(ids);
+        logger.info("-> 逻辑删除的记录id有: {}；成功删除个数: {}\n", ids, i);
+        if(i == ids.length) {
+            modelMap.put("success", true);
+            modelMap.put("data", i);
+            modelMap.put("resultMsg", "删除成功!");
+        } else {
+            modelMap.put("success", false);
+            modelMap.put("data", i);
+            modelMap.put("resultMsg", "删除失败!");
+        }
+		return modelMap;
 	}
 }

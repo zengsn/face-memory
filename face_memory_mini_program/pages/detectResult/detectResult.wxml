@@ -1,50 +1,111 @@
 <!--pages/uncheck/uncheck.wxml-->
 <view class="page">
-  <view class="page__bd">
-    <view wx:if="{{abbr_url.length>0}}">
-      <view wx:for="{{abbr_url}}" wx:key="unique">
-        <view class="weui-panel__bd">
-          <view class="weui-panel weui-panel_access">
+    <view class="page__bd">
+        <!-- 用户未确认第一张人脸是否是本人时 -->
+        <view wx:if="{{waiting}}" class="weui-panel__bd">
+            <view wx:if="{{firstFaceInfo!=''}}">
+                <view class="weui-panel weui-panel_access">
+                    <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                        <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                            <image class="weui-media-box__thumb" src="{{firstFaceInfo.url}}" data-index="{{firstFaceInfo.id}}" bindtap='preview' lazy-load='true' mode='aspectFit' />
+                        </view>
+                        <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                            <view class="weui-media-box__title">{{firstFaceInfo.createtime}}</view>
+                            <view class="weui-media-box__desc">
+                                <text decode="{{true}}" space="{{true}}">图片中的人脸确认是本人吗?</text>
+                            </view>
+                        </view>
 
-            <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                <image class="weui-media-box__thumb" src="{{item}}" data-index="{{index}}" bindtap='previewImage' />
-              </view>
-              <navigator url="../detail/detail?id={{faceinfo[index].id}}&faceValue={{faceinfo[index].faceValue}}&age={{faceinfo[index].age}}&src={{pictures[index]}}">
-                <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                  <view class="weui-media-box__title">{{faceinfo[index].createtime}}</view>
-                  <view class="weui-media-box__desc">
-                    <text decode="{{true}}" space="{{true}}">颜值：{{faceinfo[index].faceValue}}\n 年龄：{{faceinfo[index].age}} &nbsp;&nbsp;&nbsp;</text>
-                    <!-- 健康值：{{faceinfo[index].healthValue}} -->
-                  </view>
+                        <view class="father">
+                            <button class="weui-btn mini-btn" type="primary" size="mini" bindtap="sure" data-index="{{firstFaceInfo.id}}">确认</button>
+                            <button class="weui-btn mini-btn" type="warn" size="mini" bindtap="deleteFirst" style="margin-top:2px" data-index="{{firstFaceInfo.id}}">删除</button>
+                        </view>
+                    </view>
                 </view>
-
-              </navigator>
-              <view class="father">
-                <button class="weui-btn mini-btn" type="primary" size="mini" bindtap="check"  data-index="{{index}}">查看</button>
-                <button class="weui-btn mini-btn" type="warn" size="mini" bindtap="deletePic" style="margin-top:2px" data-index="{{index}}">删除</button>
-              </view>
             </view>
-          </view>
+            <view wx:else>
+                <view class="weui-loadmore weui-loadmore_line " style="width:85%">
+                    <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
+                        还没有拍照识别哦, 赶紧拍照检测吧
+                    </view>
+                </view>
+            </view>
         </view>
-      </view>
+
+
+        <view wx:else>
+
+            <view wx:if="{{delUrls.length > 0}}">
+                <view wx:for="{{delUrls}}" wx:key="unique">
+                    <view class="weui-panel__bd">
+                        <view class="weui-panel weui-panel_access">
+                            <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                                <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                                    <image class="weui-media-box__thumb" src="{{item}}" data-index="{{index}}" bindtap='previewDEL' lazy-load='true' mode='aspectFit' />
+                                </view>
+                                <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                                    <view class="weui-media-box__title">{{delInfo[index].createtime}}</view>
+                                    <view class="weui-media-box__desc">
+                                        <text wx:if='{{delInfo[index].status===4}}' decode="{{true}}" space="{{true}}">该图片中人脸不是本人, 建议删除</text>
+                                        <text wx:elif='{{delInfo[index].status===5}}' decode="{{true}}" space="{{true}}">该图片中不含人脸, 建议删除</text>
+                                        <text wx:elif='{{delInfo[index].status===3}}' decode="{{true}}" space="{{true}}">系统努力识别中, 请稍候...</text>
+                                        <text wx:else decode="{{true}}" space="{{true}}">系统识别异常</text>
+                                    </view>
+                                </view>
+                                <view class="father">
+                                    <button class="weui-btn mini-btn" type="warn" size="mini" bindtap="deleteDEL" style="margin-top:2px" data-index="{{index}}">删除</button>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view wx:if="{{pictures.length>0}}">
+                <view wx:for="{{pictures}}" wx:key="unique">
+                    <view class="weui-panel__bd">
+
+                        <view class="weui-panel weui-panel_access">
+                            <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+
+
+                                <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                                    <image class="weui-media-box__thumb" src="{{item}}" data-index="{{index}}" bindtap='previewImage' lazy-load='true' mode='aspectFit' />
+                                </view>
+                                <!-- <navigator url="../detail/detail?id={{faceinfo[index].id}}&faceValue={{faceinfo[index].faceValue}}&age={{faceinfo[index].age}}&src={{pictures[index]}}"> -->
+
+                                <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                                    <view class="weui-media-box__title">{{faceinfo[index].createtime}}</view>
+                                    <view class="weui-media-box__desc">
+                                        <text decode="{{true}}" space="{{true}}">颜值：{{faceinfo[index].faceValue}}\n 年龄：{{faceinfo[index].age}} &nbsp;&nbsp;&nbsp;</text>
+                                    </view>
+                                </view>
+                                <view class="father">
+                                    <button class="weui-btn mini-btn" type="primary" size="mini" bindtap="check" data-index="{{index}}">查看</button>
+                                    <button class="weui-btn mini-btn" type="warn" size="mini" bindtap="deletePic" style="margin-top:2px" data-index="{{index}}">删除</button>
+                                </view>
+                                <!-- </navigator> -->
+                            </view>
+                        </view>
+
+
+                    </view>
+                </view>
+            </view>
+            <view wx:if="{{prompt=='您还没有拍过照片!'}}">
+                <view class="weui-loadmore weui-loadmore_line " style="width:85%">
+                    <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
+                        您今天还没有拍照识别哦, 赶紧拍照检测吧
+                    </view>
+                </view>
+                <view class="weui-loadmore weui-loadmore_line " style="width:75%">
+                    <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
+                        可在首页查看所有历史照片
+                    </view>
+                </view>
+            </view>
+        </view>
+
+
     </view>
-    <view wx:elif="{{prompt=='您还没有拍过照片!'}}">
-      <view class="weui-loadmore weui-loadmore_line " style="width:75%">
-        <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
-          您没有未查看识别结果的照片！
-        </view> 
-        </view>
-        <view class="weui-loadmore weui-loadmore_line " style="width:75%">
-        <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
-          可在首页查看所有历史照片
-        </view>
-      </view>
-    </view>
-
-
-
-
-
-  </view>
 </view>

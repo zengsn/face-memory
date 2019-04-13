@@ -20,7 +20,8 @@ Page({
       data: {},
       header: {
         'content-type': 'json',
-        'Cookie': 'JSESSIONID=' + wx.getStorageSync("sessionID")
+        'token': wx.getStorageSync("token"),
+        'role': wx.getStorageSync("role")
       },
       success: function (res) {
         that.setData({

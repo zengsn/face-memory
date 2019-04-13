@@ -23,7 +23,7 @@ import com.gdp.service.ConfigService;
  * @since 2018-09-25
  */
 @Controller
-@RequestMapping("/config")
+@RequestMapping("/admin/config")
 public class ConfigController {
 	
 	private Logger logger = LoggerFactory.getLogger(ConfigController.class);
@@ -50,8 +50,8 @@ public class ConfigController {
 		if(!"".equals(description)) {
 			config.setDescription(description);
 		}
-		int i = configService.updateValue(config);
-		logger.info("-> 更新配置项为: " + config.toString());
+		int i = configService.updateByPrimaryKeySelective(config);
+		logger.info("-> 更新配置项为: {}", config.toString());
 		if(i == 1) {
 			res.put("result", "succeed");
 		} else {
@@ -68,7 +68,7 @@ public class ConfigController {
 	@RequestMapping("/list")
 	@ResponseBody
 	public JSONArray listConfigs(){
-		List<Config> list = configService.listAll();
+		List<Config> list = configService.selectAll();
 		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(list);
 		return jsonArray;
 	}

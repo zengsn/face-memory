@@ -1,20 +1,20 @@
 package com.gdp.web.controller;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.gdp.entity.Comment;
 import com.gdp.service.CommentService;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 小程序评论控制器
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/comment")
 public class CommentController {
 	
-	private Logger logger = Logger.getLogger(CommentController.class);
+	private Logger logger = LoggerFactory.getLogger(CommentController.class);
 	@Autowired
 	private CommentService commentService;
 	
@@ -42,7 +42,7 @@ public class CommentController {
 	public Map<String, Object> saveComment(int photoId, @RequestParam(value = "content", defaultValue = "") String content, int satisfied){
 		Map<String, Object> res = new HashMap<>();
 		Comment comment  = new Comment();
-		comment.setCreatetime(new Date(System.currentTimeMillis()));
+		comment.setCreatetime(Date.from(Instant.now()));
 		comment.setPhotoId(photoId);
 		comment.setContent(content);
 		if(satisfied == 1) {
@@ -51,7 +51,7 @@ public class CommentController {
 			comment.setSatisfied(false);
 		}
 
-		int i = commentService.saveComment(comment);
+		int i = commentService.insertSelective(comment);
 		if (i > 0) {
 			res.put("result", "succeed");
 		} else {
@@ -72,23 +72,23 @@ public class CommentController {
 	public Map<String, Object> likeTheResult(int photoId, int satisfied) {
 		Map<String, Object> res = new HashMap<>();
 		Comment comment = new Comment();
-		comment.setSatisfied(satisfied == 1 ?true :false);
+		comment.setSatisfied(satisfied == 1 ? true : false);
 		comment.setPhotoId(photoId);
 		List<Comment> list = commentService.selectByPhotoId(photoId);
 		
 		int i = 0;
 		if (list.size() == 0) {
 			comment.setCreatetime(new Date(System.currentTimeMillis()));
-			i = commentService.saveComment(comment);
+			i = commentService.insertSelective(comment);
 		} else {
 			comment.setId(list.get(0).getId());
-			i = commentService.updateComment(comment);
+			i = commentService.updateByPrimaryKeySelective(comment);
 		}
 		
 		if(i != 0) {
 			res.put("result", "succeed");
 		}
-		logger.info("photoId: " + photoId + "\n" + comment.toString());
+		logger.info("评价图片 photoId: {} , 评价内容为: {} \n", photoId, comment.toString());
 		return res;
 	}
 }

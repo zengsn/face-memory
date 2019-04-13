@@ -13,11 +13,12 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gdp.entity.FaceInfo;
@@ -28,7 +29,6 @@ import com.gdp.util.FileUploadUtil;
 import com.gdp.util.ImageZipUtil;
 import com.gdp.util.RealPathUtils;
 import com.gdp.util.face.Response;
-import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/face")
 public class FaceController {
 
-	private Logger logger = Logger.getLogger(FaceController.class);
+	private Logger logger = LoggerFactory.getLogger(FaceController.class);
 	
 	@Autowired
 	private DetectService detectService;
@@ -76,23 +76,18 @@ public class FaceController {
         	// 将照片保存路径传入百度人脸识别
         	String reString = detectService.detect(path + filePath);
         	
-            JSON json = JSON.parseObject(reString);
-            net.sf.json.JSONObject jsonObject = net.sf.json.JSONObject.fromObject(json);
+            JSONObject jsonObject = JSONObject.parseObject(reString);
             // 封装百度识别接口的返回值
-            FaceDetectVO fDetectVO = JSONObject.toJavaObject(json, FaceDetectVO.class);
+            FaceDetectVO fDetectVO = JSONObject.parseObject(reString, FaceDetectVO.class);
             
             if(jsonObject.getString("result") != "null") {
             	System.out.println("fDetectVO.getResult().getFace_list().size():" + fDetectVO.getResult().getFace_list().size());
             	double faceValue = fDetectVO.getResult().getFace_list().get(0).getBeauty();
                 Integer age = fDetectVO.getResult().getFace_list().get(0).getAge();
                 
-                // 返回识别颜值给前端
                 res.put("face_value", faceValue);
-                // 返回识别年龄给前端
                 res.put("age", age.intValue()); 
                 res.put("filepath", filePath);
-//              打印结果方便检查结果
-//                System.out.println("----> result Beauty : " + faceValue + "\n age: " + age);
 
                 res.put("result", "succeed");
             }else {
@@ -132,7 +127,6 @@ public class FaceController {
         	// 生成缩略图
 			ImageZipUtil.thumbnailImage(destPath, destPath.replace("uploads/", "uploads/abbr/"), "JPG",72, 72, false);
 
-        	
         	logger.info("上传识别的照片所在本地地址为: " + destPath);
         	
         	// 接收识别后的返回值
@@ -151,7 +145,7 @@ public class FaceController {
         		res.put("result", "pic_not_clear");
         		// 删除本地照片
         		boolean b = FileUploadUtil.deleteFile(destPath);
-        		boolean bool = FileUploadUtil.deleteFile(destPath.replace("uploads/", "uploads/abbr/"));
+        		FileUploadUtil.deleteFile(destPath.replace("uploads/", "uploads/abbr/"));
         		if(b) {
         			logger.info("无人脸图片删除成功!");
         		}
@@ -187,13 +181,11 @@ public class FaceController {
         		faceInfo.setSkinStatus(attributes.getString("skinstatus"));
 
         		// 保存数据记录到数据库
-                int i = faceInfoService.saveFaceInfo(faceInfo);
-				faceInfo.setId(i);
+                int i = faceInfoService.insertSelective(faceInfo);
 
     			// 2. 是否是第一张照片
         		if(faceInfos.size() == 0) {
         			// 是第一张人脸照片
-//        			int i = faceInfoService.saveFaceInfo(faceInfo);
         			res.put("result", "first");
         			res.put("res", "一个微信号仅支持识别一张人脸即微信使用者本人, 确认所拍照片为本人么? 此提醒仅在第一张照片时提醒");
         			res.put("info", faceInfo);
@@ -202,6 +194,7 @@ public class FaceController {
         			res.put("emotion", emotion);
         			return res;
         		} else {
+        			// 比较是否是原来的同一个人
         			FaceInfo faceInfoFromDB = faceInfos.get(0);
         			String filePath1 = path + faceInfoFromDB.getPhotoPath();
         			logger.info("来自原有照片的路径：" + filePath1);
@@ -216,17 +209,13 @@ public class FaceController {
         			// 一组用于参考的置信度阈值
         			// 低于“千分之一”阈值则不建议认为是同一个人；如果置信值超过“十万分之一”阈值，则是同一个人的几率非常高
         			JSONObject json = j.getJSONObject("thresholds");
-        			System.out.println("json:" + json.toJSONString());
+
         			float threshold = json.getBigDecimal("1e-5").floatValue();
         			// 是同一个人的置信度
         			float confidence = j.getBigDecimal("confidence").floatValue(); 
         			
         			// 3.  是否是同个人的照片
         			if(confidence > threshold) {
-//        				// 生成缩略图
-//        				ImageZipUtil.thumbnailImage(destPath, destPath.replace("uploads/", "uploads/abbr/"), "JPG",72, 72, false);
-        				
-        				logger.info("是同个人");
         				res.put("recondId", i);
 //        				// 是同一个人
         				res.put("res", "识别成功");
@@ -240,12 +229,12 @@ public class FaceController {
         				res.put("result", "not_the_same_human");
         				// 删除本地磁盘中的照片
                 		boolean b = FileUploadUtil.deleteFile(destPath);
-                		boolean bool = FileUploadUtil.deleteFile(destPath.replace("uploads/", "uploads/abbr/"));
+                		FileUploadUtil.deleteFile(destPath.replace("uploads/", "uploads/abbr/"));
                 		// 删除数据库表记录
                         int t = faceInfoService.deleteFaceInfoById(i);
 
                         if(b && (t == 1)) {
-                            logger.info("无人脸图片删除成功!");
+                            logger.info("不是本人图片删除成功!");
                         }
                         return res;
         			}
@@ -254,7 +243,7 @@ public class FaceController {
         } else {
         	res.put("result", "upload_at_fault");
         	res.put("res", "非常抱歉, 服务器上传识别失败, 请反馈给我们! ");
-        	logger.info("upload at fault");
+        	logger.error("服务器上传识别失败!");
         }
 		return res;
 	}

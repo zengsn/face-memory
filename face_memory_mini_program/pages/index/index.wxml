@@ -1,43 +1,17 @@
-<!--index.wxml-->
-<view class="page">
-  <view class="page__bd">
-    <view class="weui-panel weui-panel_access">
-      <view class="weui-panel__hd">历史照片</view>
+<!--pages/welcome/welcome.wxml-->
+<!-- 欢迎页有多个 banner 图时使用imgs -->
+<!-- <swiper indicator-dots="true" bindtap='swiperchange'>
+  <block wx:for="{{imgs}}" wx:for-index="index">
+    <swiper-item class="swiper-items">
+      <image class="swiper-image" src="{{item}}"></image>
+      <button class="weui-btn button-img" type='primary' wx:if="{{index == imgs.length - 1}}" open-type='getUserInfo' bindgetuserinfo="onGotUserInfo" >立即体验</button>
+    </swiper-item>
+  </block>
+</swiper> -->
 
-      <view class="weui-panel__bd">
-        <view wx:if="{{abbr_url.length>0}}">
-        <view wx:for="{{abbr_url}}" wx:key="unique">
-
-          <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" bindlongpress="deleteImage" data-index="{{index}}">
-            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-              <image class="weui-media-box__thumb" src="{{item}}" data-index="{{index}}" bindtap='previewImage' />
-            </view>
-            <navigator url="../detail/detail?id={{faceinfo[index].id}}&faceValue={{faceinfo[index].faceValue}}&age={{faceinfo[index].age}}&src={{pictures[index]}}">
-              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title">{{faceinfo[index].createtime}}</view>
-                <view class="weui-media-box__desc">
-                  <text decode="{{true}}" space="{{true}}">颜值：{{faceinfo[index].faceValue}}\n 年龄：{{faceinfo[index].age}} &nbsp;&nbsp;&nbsp;</text>
-                  <!-- 健康值：{{faceinfo[index].healthValue}} -->
-                </view>
-              </view>
-            </navigator>
-          </view>
-        </view>
-
-        </view>
-        <view wx:elif="{{prompt!='您还没有拍过照片!'}}">
-          <view class="prompt ">{{prompt}}</view>
-        </view>
-        <view wx:elif="{{prompt=='您还没有拍过照片!'}}">
-          <view class="weui-loadmore weui-loadmore_line ">
-            <view class="weui-loadmore__tips weui-loadmore__tips_in-line ">
-              您还没有拍过照片! 暂无数据</view>
-          </view>
-        </view>
-      </view>
-
-
-    </view>
-
-  </view>
-</view>
+<swiper indicator-dots="true" bindtap='swiperchange'>
+    <swiper-item class="swiper-items">
+      <image class="swiper-image" src="{{img}}"></image>
+      <button class="weui-btn button-img" type='primary' open-type='getUserInfo' bindgetuserinfo="onGotUserInfo" >立即体验</button>
+    </swiper-item>
+</swiper>

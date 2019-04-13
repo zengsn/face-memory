@@ -1,36 +1,19 @@
 <!--pages/setting/setting.wxml-->
 <view class='userinfo'>
-  <view class='userinfo-avatar'>
-    <open-data type="userAvatarUrl" style='width: 128rpx;  height: 128rpx;  border-radius: 50%;  justify-content: center '></open-data>
-  </view>
+    <view class='userinfo-avatar' wx:if="{{canIUse}}">
+        <open-data type="userAvatarUrl" style='width: 128rpx;  height: 128rpx;  border-radius: 50%;  justify-content: center '></open-data>
+    </view>
 </view>
-<!-- <open-data type="userNickName"></open-data> --> 
 
 <view class="page">
-  <view class="page__bd">
-    <!-- <view class="weui-cells__title">带图标、说明的列表项</view> -->
-    <view class=" weui-cells weui-cells_after-title">
-      <!-- 反馈 -->
-      <view class="weui-cell" bindtap='feedback'>
-        <view class="weui-panel weui-cell__hd">
-          <image src="../../image/feedback.png" style="margin-right: 3px;vertical-align: middle;width:20px; height: 20px;"></image>
-        </view>
-        <view class="weui-cell__bd"><text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;反馈</text></view>
-        <view class="weui-cell__ft"></view>
-      </view>
-      </view>
+    <view class="page__bd">
+        <wux-cell-group title="通用">
+            <wux-cell thumb="../../image/feedback.png" title="反馈" is-link url="../toMini/toMini" extra="小留言板"></wux-cell>
+            <wux-cell thumb="../../image/announce.png" title="公告" is-link url="../announcement/announcement"></wux-cell>
+        </wux-cell-group>
 
-      <view class="weui-panel weui-cells weui-cells_after-title">
-      <!-- 公告 -->
-      <view class="weui-cell" bindtap='announce'>
-        <view class="weui-cell__hd">
-          <image src="../../image/announce.png" style="margin-right: 3px;vertical-align: middle;width:20px; height: 20px;"></image>
-        </view>
-        <view class="weui-cell__bd"><text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;公告</text></view>
-        <view class="weui-cell__ft"></view>
-      </view>
+        <wux-cell-group title="关于小程序" label="">
+            <wux-cell thumb="../../image/about_mini.png" title="关于小程序" is-link url="../aboutus/aboutus"></wux-cell>
+        </wux-cell-group>
     </view>
-
-    
-  </view>
 </view>

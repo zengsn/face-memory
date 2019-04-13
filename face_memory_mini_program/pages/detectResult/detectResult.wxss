@@ -1,7 +1,11 @@
 /* pages/uncheck/uncheck.wxss */
-.father{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-padding-left: 20%
+
+.father {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    /* position:fixed;  */
+    right: 5%;
+
+    /* padding-left: 20%; */
 }

@@ -22,28 +22,44 @@
     <!-- 将springmvc不能处理的请求交给tomcat处理 -->
 	<mvc:default-servlet-handler /> 
 	
-    <!-- 配置freeMarker的模板路径 -->  
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">  
-       <property name="templateLoaderPath" value="/" />  
-       <property name="defaultEncoding" value="UTF-8" />  
-    </bean>  
-    <!-- freemarker视图解析器 -->  
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">  
-       <property name="suffix" value=".html" />  
-       <property name="contentType" value="text/html;charset=UTF-8" />  
-       <!-- 此变量值为pageContext.request, 页面使用方法：rc.contextPath -->  
-       <property name="requestContextAttribute" value="rc" />  
-    </bean> 
-     
-<!--         定义文件上传解析器
-    <bean id="multipartResolver"
-		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        设定默认编码
+	 <!-- 定义文件上传解析器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设定默认编码 -->
         <property name="defaultEncoding" value="UTF-8" />
-        设定文件上传的最大值5MB，5*1024*1024
+        <!-- 设定文件上传的最大值5MB，5*1024*1024 -->
         <property name="maxUploadSize" value="5242880" />
         <property name="maxInMemorySize" value="4096" />
-    </bean> -->
+    </bean> 
+    
+	
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <!-- 以下url请求不坐拦截 -->
+            <mvc:exclude-mapping path="/admin/login"/>
+            <mvc:exclude-mapping path="/admin/logout"/>
+            <mvc:exclude-mapping path="/admin/wxlogin"/>
+            <mvc:exclude-mapping path="/wx/getOpenId"/>
+            <mvc:exclude-mapping path="/userInfo/save"/>
+            <mvc:exclude-mapping path="/lib/**" />
+            <mvc:exclude-mapping path="/css/**" />
+            <mvc:exclude-mapping path="/js/**" />
+            <mvc:exclude-mapping path="/login.html" />
+            
+            <bean class="com.gdp.interceptor.LoginInterceptor"></bean>
+        </mvc:interceptor>
+        
+        <!-- 拦截已经登录失效或没有登录的请求 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"/>
+            <!-- 以下url请求不坐拦截 -->
+            <mvc:exclude-mapping path="/admin/login"/>
+            <mvc:exclude-mapping path="/admin/logout"/>
+            <mvc:exclude-mapping path="/admin/wxlogin"/>
+
+            <bean class="com.gdp.interceptor.RedirectInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
 	
 
 </beans>

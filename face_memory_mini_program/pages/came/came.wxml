@@ -1,0 +1,39 @@
+<view class="view">
+    <camera class="camera" device-position="{{device?'front':'back'}}" wx:if="{{camera}}" flash="off">
+        <cover-view class="cover-1" bindtap="camera">
+            <cover-view class="cover-2"></cover-view>
+        </cover-view>
+        <cover-image class="cover-3" src="../../image/arrow.png" style="width:60rpx;height:60rpx;" bindtap="close"></cover-image>
+        <cover-image class="cover-4" src="../../image/reverse.png" style="width:60rpx;height:60rpx;" bindtap="devicePosition"></cover-image>
+    </camera>
+
+    <!-- 拍照结果预览 -->
+    <view class="window" style="text-align: center;">
+        <image class="image-pic" src="{{tempImagePath}}" bindtap="img" mode="aspectFit"></image>
+
+        <view style='color: darkgray;'> 识别结果 </view>
+        <view style='margin-left:10px'>
+            <view style='padding-top:50rpx'></view>
+
+            <!-- 识别过程中显示内容: start -->
+            <wux-steps current="{{ current }}">
+                <wux-step title="拍照完成"></wux-step>
+                <wux-step title="上传图片" content="上传过程中请不要离开当前页面"></wux-step>
+                <wux-step title="系统识别" content="识别时间可能较长, 可稍后于'识别结果'菜单中查看处理情况"></wux-step>
+                <wux-step title="识别完成"></wux-step>
+            </wux-steps>
+
+            <!-- 识别过程中显示内容: end -->
+        </view>
+    </view>
+</view>
+<view wx:if='{{masked}}'>
+<view class="weui-progress mask-view" >
+    <view class="weui-progress__bar" style='text-align: center; margin-left:15px;margin-right:15px; opacity:1;z-index: 999;'>
+        <text style='color:white;'>上传图片中, 请勿离开此页面</text>
+        <progress percent="{{progress}}" stroke-width="10" />
+        <text style='color:white;'>上传进度: {{progress}} %</text>
+    </view>
+</view>
+
+</view>

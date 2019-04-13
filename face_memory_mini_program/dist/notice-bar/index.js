@@ -127,4 +127,5 @@ Component({
     detached() {
         this.clearMarqueeTimer()
     },
+    
 })

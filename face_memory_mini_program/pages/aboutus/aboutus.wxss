@@ -1,0 +1,10 @@
+/* pages/aboutus/aboutus.wxss */
+.icon-item{
+    width: 40rpx;
+    height: 40rpx;
+}
+
+.top{
+    margin-top: 30rpx;
+    margin-left: 30rpx;
+}
