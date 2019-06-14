@@ -7,10 +7,34 @@
 
 <view class="page">
     <view class="page__bd">
+        <view class="weui-cells__title">通用</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell weui-cell_access" bindtap="toOtherMini">
+                <view class="weui-cell__hd" style="position: relative;margin-right: 10px;">
+                    <image src="../../image/feedback.png" style="width: 20px; height: 20px; display: block" />
+                </view>
+                <view class="weui-cell__bd">
+                    <view>反馈</view>
+                </view>
+                <view class="weui-cell__ft weui-cell__ft_in-access">小留言板</view>
+            </view>
+            <view class="weui-cell weui-cell_access" bindtap="announce">
+                <view class="weui-cell__hd" style="position: relative;margin-right: 10px;">
+                    <image src="../../image/announce.png" style="width: 20px; height: 20px; display: block" />
+                </view>
+                <view class="weui-cell__bd">
+                    <view>公告</view>
+                </view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+        </view>
+
+<!-- 
         <wux-cell-group title="通用">
             <wux-cell thumb="../../image/feedback.png" title="反馈" is-link url="../toMini/toMini" extra="小留言板"></wux-cell>
             <wux-cell thumb="../../image/announce.png" title="公告" is-link url="../announcement/announcement"></wux-cell>
         </wux-cell-group>
+ -->
 
         <wux-cell-group title="关于小程序" label="">
             <wux-cell thumb="../../image/about_mini.png" title="关于小程序" is-link url="../aboutus/aboutus"></wux-cell>

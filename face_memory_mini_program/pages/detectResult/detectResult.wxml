@@ -10,10 +10,10 @@
                             <image class="weui-media-box__thumb" src="{{firstFaceInfo.url}}" data-index="{{firstFaceInfo.id}}" bindtap='preview' lazy-load='true' mode='aspectFit' />
                         </view>
                         <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                            <view class="weui-media-box__title">{{firstFaceInfo.createtime}}</view>
-                            <view class="weui-media-box__desc">
+                            <view class="weui-media-box__title" style='font-size:14px'>
                                 <text decode="{{true}}" space="{{true}}">图片中的人脸确认是本人吗?</text>
                             </view>
+                            <view class="weui-media-box__desc" style='font-size:14px'>{{firstFaceInfo.createtime}}</view>
                         </view>
 
                         <view class="father">
@@ -44,13 +44,14 @@
                                     <image class="weui-media-box__thumb" src="{{item}}" data-index="{{index}}" bindtap='previewDEL' lazy-load='true' mode='aspectFit' />
                                 </view>
                                 <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                                    <view class="weui-media-box__title">{{delInfo[index].createtime}}</view>
-                                    <view class="weui-media-box__desc">
+                                    <view class="weui-media-box__title"  style='font-size:14px'>
                                         <text wx:if='{{delInfo[index].status===4}}' decode="{{true}}" space="{{true}}">该图片中人脸不是本人, 建议删除</text>
                                         <text wx:elif='{{delInfo[index].status===5}}' decode="{{true}}" space="{{true}}">该图片中不含人脸, 建议删除</text>
-                                        <text wx:elif='{{delInfo[index].status===3}}' decode="{{true}}" space="{{true}}">系统努力识别中, 请稍候...</text>
+                                        <text wx:elif='{{delInfo[index].status===2}}' decode="{{true}}" space="{{true}}">系统努力识别中, 请稍候...</text>
+                                        <text wx:elif='{{delInfo[index].status===3}}' decode="{{true}}" space="{{true}}">等待用户操作, 请稍候...</text>
                                         <text wx:else decode="{{true}}" space="{{true}}">系统识别异常</text>
                                     </view>
+                                    <view class="weui-media-box__desc" style='font-size:14px'>{{delInfo[index].createtime}}</view>
                                 </view>
                                 <view class="father">
                                     <button class="weui-btn mini-btn" type="warn" size="mini" bindtap="deleteDEL" style="margin-top:2px" data-index="{{index}}">删除</button>
@@ -75,10 +76,10 @@
                                 <!-- <navigator url="../detail/detail?id={{faceinfo[index].id}}&faceValue={{faceinfo[index].faceValue}}&age={{faceinfo[index].age}}&src={{pictures[index]}}"> -->
 
                                 <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                                    <view class="weui-media-box__title">{{faceinfo[index].createtime}}</view>
-                                    <view class="weui-media-box__desc">
-                                        <text decode="{{true}}" space="{{true}}">颜值：{{faceinfo[index].faceValue}}\n 年龄：{{faceinfo[index].age}} &nbsp;&nbsp;&nbsp;</text>
+                                    <view class="weui-media-box__title" style='font-size:14px'>
+                                        <text decode="{{true}}" space="{{true}}">颜值：{{faceinfo[index].faceValue}}\n 皮肤状态：{{faceinfo[index].status}} &nbsp;&nbsp;&nbsp;</text>
                                     </view>
+                                    <view class="weui-media-box__desc" style='font-size:14px'>{{faceinfo[index].createtime}}</view>
                                 </view>
                                 <view class="father">
                                     <button class="weui-btn mini-btn" type="primary" size="mini" bindtap="check" data-index="{{index}}">查看</button>

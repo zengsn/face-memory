@@ -1,5 +1,5 @@
 <!--pages/detial/detail.wxml-->
-<image mode="aspectFit" src="{{src}}" class='image-pic'></image>
+<image mode="aspectFit" src="{{src}}" bindtap='previewImage' class='image-pic'></image>
 <view class="page" style='margin-top: 20px'>
     <view class="page__bd">
 

@@ -1,23 +1,17 @@
-// pages/detial/detail.js
-
 var wxCharts = require('../../utils/wxcharts.js');
 var app = getApp();
+var columnChart = null;
+var radarChart = null;
+var chartData = {
+    title: '总成交量',
+    data: [22, 70.379],
+    categories: ['年龄', '颜值']
+};
 Page({
-
-    /**
-     * 页面的初始数据
-     */
     data: {
-        // 图片的路径
         src: '',
-
         id: '',
-        age: '',
-        face_value: '',
-        emotion: '',
-        stain: '',
-        acne: '',
-        dark_circle: '',
+
         /** floating-button data :start */
         buttons: [{
                 label: '表扬下',
@@ -32,20 +26,32 @@ Page({
         visible: false,
         /** floating-button data :end */
     },
-
-
-
-    /**
-     * 生命周期函数--监听页面加载
-     */
     onLoad: function(options) {
         this.setData({
             id: options.id,
-            age: options.age,
-            faceValue: options.faceValue,
             src: options.src,
         });
+        chartData.data[0] = options.age;
+        chartData.data[1] = options.faceValue;
+    },
+
+    touchHandler: function(e) {
+        console.log(radarChart.getCurrentDataIndex(e));
+    },
+    onReady: function(e) {
+        var windowWidth = 320;
+        try {
+            var res = wx.getSystemInfoSync();
+            windowWidth = res.windowWidth;
+        } catch (e) {
+            console.error('getSystemInfoSync failed!');
+        }
+
+        var radar_categories = new Array(3);
+        var radar_categories_data = new Array(3);
+
         var that = this;
+        // 获取详细数据
         var geturl = app.globalData.url + '/faceInfo/get'
         wx.request({
             url: geturl,
@@ -59,44 +65,118 @@ Page({
             },
             success: function(res) {
                 console.log(res.data.info)
-                that.setData({
-                    face_value: res.data.info.faceValue,
-                    age: res.data.info.age,
-                    emotion: res.data.info.emotion,
-                    stain: res.data.info.skinStatus.stain,
-                    acne: res.data.info.skinStatus.acne,
-                    dark_circle: res.data.info.skinStatus.dark_circle,
-                });
-            }
-        });
-        var windowWidth = 320;
-        try {
-            var res = wx.getSystemInfoSync();
-            windowWidth = res.windowWidth;
-        } catch (e) {
-            console.error('getSystemInfoSync failed!');
-        }
-        new wxCharts({
-            canvasId: 'radarCanvas',
-            type: 'radar',
-            categories: ['1', '2', '3', '4', '5', '6'],
-            series: [{
-                name: '成交量1',
-                data: [90, 110, 125, 95, 87, 122]
-            }],
-            width: windowWidth,
-            height: 200,
-            extra: {
-                radar: {
-                    max: 150
+                // 设置雷达图数据
+                radar_categories[0] = '色斑系数: ' + res.data.info.skinStatus.stain;
+                radar_categories_data[0] = res.data.info.skinStatus.stain;
+                radar_categories[1] = '青春痘系数: ' + res.data.info.skinStatus.acne;
+                radar_categories_data[1] = res.data.info.skinStatus.acne;
+                radar_categories[2] = '黑眼圈系数: ' + res.data.info.skinStatus.dark_circle;
+                radar_categories_data[2] = res.data.info.skinStatus.dark_circle;
+
+                chartData.data[0] = res.data.info.age;
+                chartData.data[1] = res.data.info.faceValue;
+                // res.data.info.emotion    // 心情
+
+                that.createRadarChart(radar_categories, radar_categories_data, windowWidth)
+                that.createColumnChart(chartData, windowWidth);
+
+                if (res.data.face_quality === "bad") {
+                    // 如果人脸图像质量较差是弹出提示框
+                    try {
+                        var value = wx.getStorageSync('no_show_anymore')
+                        console.log("value : " + value)
+                        if (value == "" || value == "0") {
+                            wx.showModal({
+                                title: '温馨提醒',
+                                content: '该照片光线不佳, 可能影响识别结果, 建议到光线充足的地方拍摄',
+                                cancelText: "不再提醒",
+                                cancelColor: "red",
+                                confirmText: "确认",
+                                success: function(res) {
+                                    if (res.confirm) {}
+                                    if (res.cancel) {
+                                        console.log("点击了不再提醒")
+                                        wx.setStorage({
+                                            key: 'no_show_anymore',
+                                            data: '1',
+                                        })
+                                    }
+                                },
+                            })
+                        }
+                    } catch (e) {}
                 }
             }
         });
     },
 
+    createRadarChart(categories, categories_data, windowWidth) {
+        var max = 100;
+        // 当三个系数都小于40时, 雷达图值的最大值为 50
+        if (categories_data[0] < 40 && categories_data[1] < 40 && categories_data[2] < 40) {
+            max = 50;
+        }
+        radarChart = new wxCharts({
+            canvasId: 'radarCanvas',
+            type: 'radar',
+            categories: categories,
+            dataLabel: true,
+            series: [{
+                name: '系数值',
+                data: categories_data,
+                color: '#1aad19'
+            }],
+            width: windowWidth,
+            height: 200,
+            extra: {
+                radar: {
+                    max: max,
+                    labelColor: '#666666',
+                    gridColor: '#cccccc',
+                }
+            }
+        });
+    },
+
+    createColumnChart(chartData, windowWidth) {
+        columnChart = new wxCharts({
+            canvasId: 'columnCanvas',
+            type: 'column',
+            animation: true,    // 是否动画展示
+            categories: chartData.categories,
+            series: [{
+                name: '数值',
+                data: chartData.data,
+                format: function(val, name) {
+                    return val;
+                },
+                color: '#1aad19'
+            }],
+            yAxis: {
+                format: function(val) {
+                    return val;
+                },
+                title: '数值',
+                min: 0
+            },
+            xAxis: {
+                disableGrid: false,
+                type: 'calibration'
+            },
+            extra: {
+                column: {
+                    width: 30
+                }
+            },
+            width: windowWidth,
+            height: 150,
+        });
+    },
 
     buttonClicked(e) {
-        const {index} = e.detail
+        const {
+            index
+        } = e.detail
         var that = this;
         var clickurl = app.globalData.url;
 
@@ -112,7 +192,7 @@ Page({
                 'token': wx.getStorageSync("token"),
                 'role': wx.getStorageSync("role")
             },
-            success: function (res) {
+            success: function(res) {
                 wx.showModal({
                     title: '表扬成功',
                     showCancel: !1,
@@ -132,7 +212,7 @@ Page({
                 'token': wx.getStorageSync("token"),
                 'role': wx.getStorageSync("role")
             },
-            success: function (res) {
+            success: function(res) {
                 wx.showModal({
                     title: '吐槽成功',
                     showCancel: !1,
@@ -144,11 +224,11 @@ Page({
     /**
      * 预览照片监听
      */
-    previewImage: function (e) {
+    previewImage: function(e) {
         // 小图预览，进入全屏模式
         var that = this;
         var pic = new Array(1);
-        pic[0] = that.data.src.replace('abbr/','');
+        pic[0] = that.data.src.replace('abbr/', '');
 
         wx.previewImage({
             current: pic[0],
@@ -156,15 +236,6 @@ Page({
         })
     },
 
+    bindchange(e) {},
 
-    bindchange(e) {
-    
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage: function() {
-
-    },
-})
+});

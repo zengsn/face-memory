@@ -1,4 +1,5 @@
-
+var wxCharts = require('../../utils/wxcharts.js');
+var ringChart = null;
 //获取应用实例
 const app = getApp()
 var f = true;
@@ -38,7 +39,7 @@ Page({
                             'content-type': 'json'
                         },
                         success: function(res) {
-                            wx.hideLoading();                            
+                            wx.hideLoading();
                             wx.setStorageSync("role", res.data.role);
                             wx.setStorageSync("token", res.data.token);
                             if (f) {
@@ -54,7 +55,7 @@ Page({
                         title: '提示',
                         content: '登陆失败',
                         confirmText: '重试',
-                        success: function (res) {
+                        success: function(res) {
                             if (res.confirm) {
                                 that.getSession();
                             } else if (res.cancel) {
@@ -77,21 +78,21 @@ Page({
         if (!this.loading) {
             this.getPic(1);
             // 处理完成后，终止下拉刷新
-            wx.stopPullDownRefresh()
+            wx.stopPullDownRefresh();
         }
     },
     /**
      * 页面上拉触底事件的处理函数
      */
-    onReachBottom: function () {
+    onReachBottom: function() {
         let index = this.data.index;
         this.setData({
-            index: (index+1)
+            index: (index + 1)
         });
         this.getPic(this.data.index);
     },
 
-    toCamera:function() {
+    toCamera: function() {
         wx.navigateTo({
             url: '../came/came',
             success: function(res) {},
@@ -115,21 +116,43 @@ Page({
             },
             success: function(res) {
                 console.log("获取历史图片, index: " + index);
-                if(res.data.result === "succeed") {
-                    if(index === 1){
+                if (res.data.result === "succeed") {
+                    if (index === 1) {
                         that.setData({
                             abbr_url: res.data.abbr_urls,
                             pictures: res.data.urls,
                             faceinfo: res.data.faceinfo
                         });
-                    }else {
+                        console.log("数据获取完成")
+                        setTimeout(() => {
+                            console.log("开始渲染图表了")
+                            // console.log(that.data.faceinfo);
+                            that.randerChart(that.data.faceinfo);
+                        }, 100)
+                    } else {
+                        var records = that.data.faceinfo.length;
                         that.setData({
-                            // abbr_url: res.data.abbr_urls,
+                            abbr_url: that.data.abbr_url.concat(res.data.abbr_urls),
                             pictures: that.data.pictures.concat(res.data.urls),
                             faceinfo: that.data.faceinfo.concat(res.data.faceinfo)
                         });
+                        var new_records = that.data.faceinfo.length;
+                        setTimeout(() => {
+                            for (var i = records; i < new_records; i++) {
+                                // 颜值
+                                var fv = that.data.faceinfo[i].faceValue;
+                                that.createRingChart(i, fv);
+                            }
+                        }, 100)
                     }
                 } else {
+                    if (index === 1) {
+                        that.setData({
+                            abbr_url: "",
+                            pictures: "",
+                            faceinfo: ""
+                        });
+                    }
                     if (that.data.pictures.length === 0) {
                         that.setData({
                             prompt: '您还没有拍过照片!'
@@ -226,7 +249,7 @@ Page({
                         header: {
                             'content-type': 'json'
                         },
-                        success: function (res) {
+                        success: function(res) {
                             wx.setStorageSync("role", res.data.role);
                             wx.setStorageSync("token", res.data.token);
                             if (f) {
@@ -242,5 +265,69 @@ Page({
     },
     // 获取sessionID :end
 
+    touchHandler: function(e) {
+        console.log(ringChart.getCurrentDataIndex(e));
+    },
+
+    randerChart: function(faceinfo) {
+        // 每次 setData 都触发
+        var length = this.data.faceinfo.length;
+        console.log("渲染页面完成", length)
+        for (var i = 0; i < length; i++) {
+            // 颜值
+            var fv = this.data.faceinfo[i].faceValue;
+            this.createRingChart(i, fv);
+        }
+    },
+    // onReady:function(e){
+    // this.createRingChart("");
+    // },
+    createRingChart: function(index, fv) {
+        ringChart = new wxCharts({
+            animation: true,
+            canvasId: 'ringCanvas' + index,
+            type: 'ring',
+            extra: {
+                ringWidth: 5,
+                pie: {
+                    offsetAngle: -90
+                }
+            },
+            title: {
+                name: fv,
+                color: '#1aad19',
+                fontSize: 9
+            },
+            subtitle: {
+                name: '颜值',
+                color: '#666666',
+                fontSize: 12
+            },
+            series: [{
+                name: '颜值',
+                data: fv,
+                stroke: false,
+                color: "#1aad19"
+            }, {
+                name: '空白',
+                data: 100-fv,
+                stroke: false,
+                color: "white"
+            }],
+            disablePieStroke: true,
+            width: 100,
+            height: 100,
+            dataLabel: false,
+            legend: false,
+            background: '#f5f5f5',
+            padding: 0
+        });
+        ringChart.addEventListener('renderComplete', () => {
+            console.log('renderComplete');
+        });
+        setTimeout(() => {
+            ringChart.stopAnimation();
+        }, 500);
+    },
 
 })
