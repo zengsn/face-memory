@@ -78,7 +78,7 @@ public class PhotoController {
 			for(int i = (index-1)*limit; i < (index*limit); i++) {
 				JSONObject obj = new JSONObject();
 				StringBuilder sb = new StringBuilder(ParaUtil.domain_name);
-				sb.append("uploads/").append(list.get(i).getPhotoPath());
+				sb.append("uploads/abbr/").append(list.get(i).getPhotoPath());
 
                 obj.put("id", list.get(i).getId());
                 obj.put("url", sb.toString());
@@ -95,7 +95,7 @@ public class PhotoController {
 			for(int i = (index-1)*limit; i < list.size(); i++) {
 				JSONObject obj = new JSONObject();
                 StringBuilder sb = new StringBuilder(ParaUtil.domain_name);
-                sb.append("uploads/").append(list.get(i).getPhotoPath());
+                sb.append("uploads/abbr/").append(list.get(i).getPhotoPath());
 
                 obj.put("id", list.get(i).getId());
                 obj.put("url", sb.toString());

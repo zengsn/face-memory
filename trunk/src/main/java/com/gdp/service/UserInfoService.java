@@ -39,10 +39,20 @@ public interface UserInfoService extends BaseService<Mapper<UserInfo>, UserInfo>
     int updateByOpenid(UserInfo userInfo);
 
     /**
+     * 查询两个日期之间增加的用户数
      * 
      * @param from
-     * @param from2
+     * @param end
      * @return
      */
-	int countBetweenToday(Date from, Date from2);
+	int countBetweenToday(Date from, Date end);
+
+	/**
+	 * 查询总的用户数
+	 * 
+	 * @return
+	 */
+	int countAll();
+	
+	
 }

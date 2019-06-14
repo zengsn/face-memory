@@ -1,5 +1,6 @@
 package com.gdp.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.gdp.base.BaseService;
@@ -73,5 +74,14 @@ public interface FaceInfoService extends BaseService<Mapper<FaceInfo>, FaceInfo>
 	 * @return
 	 */
 	public List<FaceInfo> listShouldBedeleted(String openid);
+	
+	/**
+	 * 查询某段时间内的用户使用数
+	 * 
+	 * @param from
+	 * @param end
+	 * @return
+	 */
+	public int countBetween(Date from, Date end);
 
 }

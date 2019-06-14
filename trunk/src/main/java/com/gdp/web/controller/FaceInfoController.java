@@ -124,7 +124,7 @@ public class FaceInfoController {
 			this.faceInfoService.updateByPrimaryKeySelective(faceInfo);
 			
         	// 生成缩略图
-			ImageZipUtil.thumbnailImage(pathname, pathname.replace("uploads/", "uploads/abbr/"), "JPG",72, 72, false);
+			ImageZipUtil.googleImageZip(pathname, pathname.replace("uploads/", "uploads/abbr/"));
 			logger.error("faceInfo:{}" + faceInfo.toString());
 			modelMap.put("result", "succeed");
 			modelMap.put("resultMsg", "图片上传成功");
@@ -153,6 +153,11 @@ public class FaceInfoController {
 		
 		String nowPhotoPath = ParaUtil.UPLOAD_PATH + faceInfo.getPhotoPath();
 		Response detectByFace = this.detectService.detectByFace(nowPhotoPath);
+		if(detectByFace == null) {
+			modelMap.put("result", "system error");
+			modelMap.put("resultMsg", "识别失败, 系统异常, 请联系我们");
+			return modelMap;
+		}
 		logger.info("人脸识别结果返回值为:" + detectByFace.toString());
     	
     	// 转化返回值的字节结果为字符串
@@ -321,7 +326,7 @@ public class FaceInfoController {
 			logger.info("list: " + lists.toString());
 			
 			List<PastPhotoVO> pastPhotoVOs = new ArrayList<PastPhotoVO>();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			
 			// 利用迭代器分别处理 url 并封装数据
 			String[] urls = new String [lists.size()];
@@ -349,6 +354,7 @@ public class FaceInfoController {
 				pastPhotoVO.setEmotion(faceInfo.getEmotion());
 				pastPhotoVO.setId(faceInfo.getId());
 				pastPhotoVO.setSkinStatus(JSONObject.parseObject(faceInfo.getSkinStatus()));
+				pastPhotoVO.setStatus(getFaceStatus(faceInfo));
 				pastPhotoVOs.add(pastPhotoVO);
 				/****************************/
 				i++;
@@ -448,12 +454,19 @@ public class FaceInfoController {
 		}
 		
 		List<FaceInfo> list = faceInfoService.listByOpenIdForAdmin(openid);
-		if(list == null || first == 1 || faceInfo.getStatus() == 3) {
+		logger.error("\n\n ------------\n 还有记录吗? {}", list);
+		if(list == null || list.size() == 0 || first == 1 || faceInfo.getStatus() == 3) {
+			logger.error("\n\n ------------\n 没有记录了 ");
 			// 恢复用户状态为初始值
 			UserInfo userInfo = new UserInfo();
 			userInfo.setOpenid(openid);
 			userInfo.setStatus(0);
-			userInfoService.updateByPrimaryKeySelective(userInfo);
+			int resu = userInfoService.updateByPrimaryKeySelective(userInfo);
+			if (resu == 1) {
+				logger.info("用户状态恢复成功");
+			} else {
+				logger.error("用户状态恢复失败");
+			}
 		}
 		
         res.put("result", "succeed");
@@ -485,6 +498,16 @@ public class FaceInfoController {
 		// 设置 response 中的 Cache-Control 进行http缓存 ( 30天 )
 		httpServletResponse.addHeader("Cache-control", "max-age=2592000");
 		modelMap.put("info", pastPhotoVO);
+		
+		String face_quality = faceInfo.getFaceQuality();
+		JSONObject object = JSONObject.parseObject(face_quality);
+		// 人脸图片质量值小于阈值, 确定该图片不够清晰, 识别结果可能存在误差
+		if (object.getDouble("threshold") > object.getDouble("value")) {
+			modelMap.put("face_quality", "bad");
+		} else {
+			modelMap.put("face_quality", "good");
+		}
+		
 		
 		return modelMap;
 	}
@@ -546,6 +569,7 @@ public class FaceInfoController {
 				pastPhotoVO.setEmotion(t.getEmotion());
 				pastPhotoVO.setId(t.getId());
 				pastPhotoVO.setSkinStatus(JSONObject.parseObject(t.getSkinStatus()));
+				pastPhotoVO.setStatus(this.getFaceStatus(t));
 				
 				todayList.add(pastPhotoVO);
 				urls.add(prefix + t.getPhotoPath());
@@ -627,4 +651,27 @@ public class FaceInfoController {
 
 		return "面无表情";
 	}
+	
+	private String getFaceStatus(FaceInfo info) {
+		String result = "良好";
+
+		String skinStatus = info.getSkinStatus();
+		JSONObject object = JSONObject.parseObject(skinStatus);
+		
+		BigDecimal dark_circle = object.getBigDecimal("dark_circle");
+		BigDecimal acne = object.getBigDecimal("acne");
+		// 黑眼圈系数大于10, 人脸状态为 较差
+		if (dark_circle.compareTo(new BigDecimal(20)) > 0 || acne.compareTo(new BigDecimal(50)) > 0) {
+			result = "较差";
+		}
+		
+		// 健康置性度超过50, 确定为健康
+		BigDecimal health = object.getBigDecimal("health");
+		if (health.compareTo(new BigDecimal(50)) > 0) {
+			result = "健康";
+		}
+		
+		return result;
+	}
+
 }

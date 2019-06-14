@@ -13,18 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gdp.service.FaceInfoService;
 import com.gdp.service.UserInfoService;
 
-@RestController("adminUserInfoController")
-@RequestMapping("/admin")
-public class UserInfoController {
+@RestController("adminFaceInfoController")
+@RequestMapping("/admin/faceInfo")
+public class FaceInfoController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
+	@Autowired
+	private FaceInfoService faceInfoService;
 	@Autowired
 	private UserInfoService userInfoService;
 	
 	/**
-	 *  列出最近一周用户数的变化
+	 * 列出最近一周小程序使用用户数
 	 * 
 	 * @return
 	 */
@@ -43,7 +46,7 @@ public class UserInfoController {
 		
 		for (int i = -6; i <= 0; i++) {
 			days[i+6] = nowDate.plusDays(i).format(dateTimeFormatter);
-			counts[i+6] = userInfoService.countBetweenToday(Date.from(nowDate.plusDays(i).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+			counts[i+6] = faceInfoService.countBetween(Date.from(nowDate.plusDays(i).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
 					Date.from(nowDate.plusDays(i+1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		}
 		
@@ -55,5 +58,4 @@ public class UserInfoController {
 		
 		return modelMap;
 	}
-	
 }

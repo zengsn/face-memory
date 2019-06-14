@@ -65,7 +65,7 @@
 </script>
 <!-- 自定义 laytpl -->
 <script type="text/html" id="pic_tpl">
-    <img src="{{d.url}}"  height='70px' onclick="window.open('{{d.url}}')" >
+    <img src="{{d.url}}"  height='70px' onclick="window.open('{{d.url.replace('abbr/', '')}}')" >
 </script>
 
 </body>

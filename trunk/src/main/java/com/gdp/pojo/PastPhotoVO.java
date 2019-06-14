@@ -22,6 +22,16 @@ public class PastPhotoVO {
 	private Integer id;
 
 	private JSONObject skinStatus;
+	
+	private String status;	// 人脸状态: 健康, 一般
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public Byte getAge() {
 		return age;
@@ -82,7 +92,8 @@ public class PastPhotoVO {
 	@Override
 	public String toString() {
 		return "PastPhotoVO [age=" + age + ", createtime=" + createtime + ", emotion=" + emotion + ", faceValue="
-				+ faceValue + ", healthValue=" + healthValue + ", id=" + id + ", skinStatus=" + skinStatus + "]";
+				+ faceValue + ", healthValue=" + healthValue + ", id=" + id + ", skinStatus=" + skinStatus + ", status="
+				+ status + "]";
 	}
 
 }

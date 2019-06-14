@@ -22,15 +22,15 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if (roleString != null) {
 			role = AESUtil.decrypt(roleString, "role");
 			if("user".equals(role)) {
-				String openid = AESUtil.decrypt(request.getHeader("token"), "openid");
-				LOGGER.info("小程序用户登录, openid: {} ", openid);
+//				String openid = AESUtil.decrypt(request.getHeader("token"), "openid");
+//				LOGGER.info("小程序用户登录, openid: {} ", openid);
 
 				return true;
 			}
 		} else {
 			role = (String) request.getSession().getAttribute("role");
 			if("admin".equals(role)) {
-				LOGGER.info("管理员登录");
+//				LOGGER.info("管理员登录");
 				return true;
 			}
 		}
