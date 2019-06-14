@@ -13,7 +13,7 @@
     <div style="line-height: 30px"><h2>公告内容</h2></div>
 
     <div class="layui-btn-group demoTable" style="margin-top: 20px">
-        <button class="layui-btn layui-btn-danger" data-type="delCheckData" ><i class="layui-icon">&#xe640;</i>删除选中数据</button>
+        <button class="layui-btn" data-type="addData" ><i class="layui-icon">&#xe608;</i> 添加公告</button>
     </div>
     <table class="layui-table" lay-size="lg" id="fold-list" lay-filter="fold-list"></table>
 </div>
@@ -44,22 +44,21 @@
         var dataTable = table.render({
             elem: '#fold-list'
             , height: 420
-            , url: 'admin/listFeedback' //数据接口
+            , url: 'admin/announcement/list' //数据接口
             , title: '公告信息表'
             , page: true
             // ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             , totalRow: true //开启合计行
             , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
-                // ,{field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', totalRowText: '合计：'}
                 , {field: 'id', title: 'ID', width: '5%'}
-                , {field: 'wxid', title: '微信唯一标识', width: '21%'}
-                , {field: 'content', title: '反馈内容', width: '35%'}
-                , {field: 'email', title: '邮箱地址', width: '20%'}
+                , {field: 'content', title: '公告内容', width: '45%'}
+                , {field: 'priority', title: '显示优先级', width: '10%', align:'center'}
+                , {field: 'creator', title: '创建者', width: '10%'}
                 , {field: 'createtime', title: '创建时间', width: '15%', templet:'#createtime'}
-                // , {fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}
+                , {fixed: 'right', width:128, align:'center', toolbar: '#barDemo'}
             ]]
-            , id: 'feedbackTable'
+            , id: 'announceTable'
             , done: function (res, curr, count) {
 
                 layFilterIndex = 'LAY-table-'+dataTable.config.index;
@@ -77,25 +76,84 @@
         });
 
         // 监听工具条
-        // table.on('tool(fold-list)', function(obj){
-        //     var data = obj.data;
-        //     if(obj.event === 'detail') {
-        //         layer.msg('ID：'+ data.id + ' 的查看操作');
-        //     } else if (obj.event === 'del') {
-        //         layer.confirm('真的删除行么', function(index){
-        //             obj.del();
-        //             layer.close(index);
-        //         });
-        //     } else if (obj.event === 'edit') {
-        //         layer.alert('编辑行：<br>'+ JSON.stringify(data))
-        //     }
-        // });
+        table.on('tool(fold-list)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail') {
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else 
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
 
+                    // 删除数据逻辑
+                    $.ajax({
+                    url: "admin/announcement/delete",
+                    type: 'post',
+                    data: {
+                        id: data.id
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.result === "succeed") {
+                            layer.msg('公告删除成功');
+                        } else  {
+                            layer.msg('公告删除失败');
+                        } 
+                    }
+                })
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    type: 2,
+                    content: './modifyAnnounce.html',
+                    success: function(layero, index){
+                        layer.style(index, {
+                            width: '500px',
+                            height: '350px',
+                            top: '100px',
+                            left:'20%'
+                        });       
+                        var body = layer.getChildFrame('body', index);
 
+                        body.find('#announceId').val(data.id);
+                        body.find('textarea').val(data.content);
+                        // body.find('.layui-input .layui-unselect').attr('placeholder', data.priority)
+                        // console.log(body.find('.layui-input .layui-unselect'))
+                        body.find('#priority').find("option[value=" + data.priority + "]").attr("selected",true);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        console.log(body.html()) //得到iframe页的body内容
+                    }
+                });
+                // layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        });
 
         var $ = layui.$, active = {
-            delCheckData: function () { // 删除选中数据
-                var checkStatus = table.checkStatus('feedbackTable')
+            addData: function() {
+                layer.open({
+                    type: 2,
+                    content: './addAnnounce.html',
+                    success: function(layero, index){
+                        layer.style(index, {
+                            width: '500px',
+                            height: '350px',
+                            top: '100px',
+                            left:'20%'
+                        });       
+                        var body = layer.getChildFrame('body', index);
+
+                        // body.find('textarea').val(data.content);
+                        // body.find('.layui-input .layui-unselect').attr('placeholder', data.priority)
+                        // console.log(body.find('.layui-input .layui-unselect'))
+                        // body.find('#priority').find("option[value=" + data.priority + "]").attr("selected",true);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        console.log(body.html()) //得到iframe页的body内容
+                    }
+            }
+
+/*             delCheckData: function () { // 删除选中数据
+                var checkStatus = table.checkStatus('announceTable')
                     , data = checkStatus.data;
                 // 具体删除逻辑
                 console.log("checkStatus: ", checkStatus);
@@ -106,9 +164,9 @@
                     ids[i] = data[i].id;
                 }
 
-                layer.confirm('确定删除行么', function(index){
+                layer.confirm('确定删除行么', function(index){15626221323
                     $.ajax({
-                        url: "admin/deleteFeedback",
+                        url: "",
                         type: 'post',
                         traditional : true,//数组
                         data:{
@@ -131,36 +189,14 @@
                                 });
 
                                 di[0].innerText = '共 ' + (spantext-ids.length) + ' 条';  // 更新总条数数据
-
-                                // 表格重载, 会引起页面刷新
-/*                                dataTable.reload({
-                                    elem: '#fold-list'
-                                    , height: 420
-                                    , url: 'admin/listFeedback' //数据接口
-                                    , title: '反馈信息表'
-                                    , page: true
-                                    // ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-                                    , totalRow: true //开启合计行
-                                    , cols: [[ //表头
-                                        {type: 'checkbox', fixed: 'left'}
-                                        // ,{field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', totalRowText: '合计：'}
-                                        , {field: 'id', title: 'ID', width: '5%'}
-                                        , {field: 'wxid', title: '微信id', width: '21%'}
-                                        , {field: 'content', title: '反馈内容', width: '35%'}
-                                        , {field: 'email', title: '邮箱地址', width: '20%'}
-                                        , {field: 'createtime', title: '创建时间', width: '15%', templet:'#createtime'}
-                                        // , {fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}
-                                    ]]
-                                    , id: 'feedbackTable'
-                                });
-*/
                                 layer.msg("删除成功!")
                             }else {
                                 layer.msg("删除失败!")
                             }
                         }
                     });
-                });
+                } */
+                );
             }
         };
         $('.demoTable .layui-btn').on('click', function() {
@@ -182,7 +218,7 @@
 </script>
 <!-- 自定义工具条 -->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <!-- <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> -->
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>

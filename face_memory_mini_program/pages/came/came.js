@@ -191,7 +191,7 @@ Page({
                                                                 mask: true,
                                                             });
                                                             wx.navigateTo({
-                                                                url: "../detail/detail?id=" + _this.data.photoId + "&faceValue=" + res.data.info.faceValue + "&age=" + res.data.info.age + "&src=" + _this.data.tempImagePath
+                                                                url: "../detailVisual/detailVisual?id=" + _this.data.photoId + "&faceValue=" + _this.data.info.faceValue + "&age=" + _this.data.info.age + "&src=" + _this.data.tempImagePath
                                                             })
                                                         }
                                                     });
@@ -204,7 +204,7 @@ Page({
                                     } else {
                                         // 用户点击确定, 跳转到识别结果页面
                                         wx.navigateTo({
-                                            url: "../detail/detail?id=" + _this.data.photoId + "&faceValue=" + res.data.info.faceValue + "&age=" + res.data.info.age + "&src=" + _this.data.tempImagePath
+                                            url: "../detailVisual/detailVisual?id=" + _this.data.photoId + "&faceValue=" + _this.data.info.faceValue + "&age=" + _this.data.info.age + "&src=" + _this.data.tempImagePath
                                         });
                                     }
                                 } else if (res.data.result === "succeed_but_no_save") {

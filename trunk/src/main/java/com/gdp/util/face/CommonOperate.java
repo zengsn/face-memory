@@ -111,10 +111,13 @@ public class CommonOperate {
      *                 Whether or return 83 key points of facial features and contour，1：return，0：not return
      * @param attributes 检测人脸的属性 gender,age,smiling,glass,headpose,facequality,blur
      *                   detect face attributes: gender,age,smiling,glass,headpose,facequality,blur
+     * @param beauty_score_min 颜值评分分数区间的最小值, 默认为0
+     * @param beauty_score_max 颜值评分分数区间的最大值, 默认为100 
      * @return
      * @throws Exception
      */
-    public Response detectBase64(String base64, int landmark, String attributes) throws Exception {
+    public Response detectBase64(String base64, int landmark, String attributes, 
+    		int beauty_score_min, int beauty_score_max) throws Exception {
         String url = webUrl + Key.SPLIT + Key.DETECT;
         HashMap<String, String> map = new HashMap<>();
         map.put(Key.KEY_FOR_APIKEY, apiKey);
@@ -126,6 +129,12 @@ public class CommonOperate {
         if(!HttpRequest.isEmpty(attributes)){
             map.put(Key.KEY_FOR_RETURN_ATTRIBUTES, attributes);
         }
+        if (beauty_score_min != 0) {
+			map.put("beauty_score_min", String.valueOf(beauty_score_min));
+		}
+        if (beauty_score_max != 100 && beauty_score_max != 0) {
+			map.put("beauty_score_max", String.valueOf(beauty_score_max));
+		}
         return HttpRequest.post(url, map, null);
     }
 

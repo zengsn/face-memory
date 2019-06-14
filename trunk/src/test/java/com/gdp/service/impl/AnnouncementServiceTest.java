@@ -2,11 +2,14 @@ package com.gdp.service.impl;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.gdp.entity.Announcement;
 
 public class AnnouncementServiceTest {
@@ -37,6 +40,16 @@ public class AnnouncementServiceTest {
 //		int i = serviceImpl.insertSelective(announcement);
 		
 		System.out.println("->  testInsertSelective :" + announcement.toString());
+	}
+	
+	@Test
+	public void testListWithPage() throws Exception {
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-context.xml");
+		AnnouncementServiceImpl bean = context.getBean(AnnouncementServiceImpl.class);
+		
+		List<Announcement> listAnnouncementsWithPage = bean.listAnnouncementsWithPage(1, 10, "priority");
+		System.out.println(JSONArray.toJSON(listAnnouncementsWithPage));
+		
 		
 	}
 }

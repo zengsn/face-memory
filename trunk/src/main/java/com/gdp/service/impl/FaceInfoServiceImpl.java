@@ -117,4 +117,16 @@ public class FaceInfoServiceImpl extends BaseServiceImpl<FaceInfoMapper, FaceInf
 		
 		return this.faceInfoMapper.selectByExample(example);
 	}
+
+	@Override
+	public int countBetween(Date from, Date end) {
+		Example example = new Example(FaceInfo.class);
+		example.setCountProperty("wxid");
+		example.setDistinct(true);
+		Criteria criteria = example.createCriteria();
+		criteria.andBetween("createTime", from, end);
+		
+		int count = this.faceInfoMapper.selectCountByExample(example);
+		return count;
+	}
 }

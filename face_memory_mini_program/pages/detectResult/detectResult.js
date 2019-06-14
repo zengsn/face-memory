@@ -107,7 +107,7 @@ Page({
         var index = parseInt(data.currentTarget.dataset.index);
         // console.log("that.faceinfo[index].id" + that.data.faceinfo[0].id);
         wx.navigateTo({
-            url: "../detail/detail?id=" + that.data.faceinfo[index].id + "&faceValue=" + that.data.faceinfo[index].faceValue + "&age=" + that.data.faceinfo[index].age + "&src=" + that.data.pictures[index],
+            url: "../detailVisual/detailVisual?id=" + that.data.faceinfo[index].id + "&faceValue=" + that.data.faceinfo[index].faceValue + "&age=" + that.data.faceinfo[index].age + "&src=" + that.data.pictures[index],
             success: function(res) {},
             fail: function(res) {},
             complete: function(res) {},

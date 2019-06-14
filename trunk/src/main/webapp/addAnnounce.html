@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -7,14 +8,10 @@
     <link rel="stylesheet" href="lib/layui/css/layui.css">
 </head>
 
-<body >
+<body>
     <br>
-    <br>   
+    <br>
     <form class="layui-form" action="">
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">公告ID</label>
-            <input id="announceId" type="text" name="announceId" required  lay-verify="required" autocomplete="off" class="layui-input" style="width: 20%">
-        </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">公告内容</label>
             <div class="layui-input-block">
@@ -59,26 +56,25 @@
             //监听提交
             form.on('submit(formDemo)', function (data) {
                 var content = data.field.desc;
-                var priority = data.field.priority;
-                var id = data.field.announceId;
-                console.log(JSON.stringify(data.field));
+                var priority = data.field.priority
+                // layer.msg(JSON.stringify(data.field));
                 $.ajax({
-                    url: "admin/announcement/modifyAnnouncement",
+                    url: "admin/announcement/saveAnnouncement",
                     type: 'post',
                     data: {
-                        id: id,
                         content: content,
                         priority: priority
                     },
                     dataType: 'json',
                     success: function (data) {
                         if (data.result === "succeed") {
-                            layer.msg('公告修改成功');
+                            layer.msg('公告创建成功');
                         } else  {
-                            layer.msg('公告修改失败');
+                            layer.msg('公告创建失败');
                         } 
                     }
                 })
+
                 return false;
             });
         });

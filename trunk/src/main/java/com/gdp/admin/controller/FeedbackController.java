@@ -50,8 +50,8 @@ public class FeedbackController {
 		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(list);
 
 		// 利用分页插件获取反馈数据总页数
-		int totalPage = ((Page<Feedback>) list).getPages();
-		logger.info("-> 反馈数据列表总页码：" + totalPage);
+//		int totalPage = ((Page<Feedback>) list).getPages();
+//		logger.info("-> 反馈数据列表总页码：" + totalPage);
 		long count = ((Page<Feedback>) list).getTotal();
 
 		// 以下各返回参数为 layui 前端框架所需参数

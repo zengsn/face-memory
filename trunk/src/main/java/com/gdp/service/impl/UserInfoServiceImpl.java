@@ -10,6 +10,9 @@ import com.gdp.entity.UserInfo;
 import com.gdp.mapper.UserInfoMapper;
 import com.gdp.service.UserInfoService;
 
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
 /**
  * @author Jashon
  * @version 1.0
@@ -37,9 +40,18 @@ public class UserInfoServiceImpl extends BaseServiceImpl<UserInfoMapper, UserInf
     }
 
 	@Override
-	public int countBetweenToday(Date from, Date from2) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int countBetweenToday(Date from, Date end) {
+		Example example = new Example(UserInfo.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andBetween("createTime", from, end);
+		
+		int count = this.userInfoMapper.selectCountByExample(example);
+		return count;
+	}
+
+	@Override
+	public int countAll() {
+		return this.userInfoMapper.selectCountByExample(null);
 	}
 
 }

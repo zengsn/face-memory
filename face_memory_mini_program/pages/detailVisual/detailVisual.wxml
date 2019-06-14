@@ -1,0 +1,16 @@
+<!--pages/detailVisual/detailVisual.wxml-->
+<image mode="aspectFit" src="{{src}}" bindtap='previewImage' class='image-pic'></image>
+<view class="page" style='margin-top: 20px'>
+    <view class="page__bd">
+
+        <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__hd">该图片识别结果</view>
+            <view>
+                <canvas canvas-id="columnCanvas" style='width:100%; height:150px;' bindtouchstart="touchHandler"></canvas>
+                <canvas canvas-id="radarCanvas" class="canvas" bindtouchstart="touchHandler"></canvas>
+            </view>
+        </view>
+    </view>
+</view>
+
+<wux-floating-button id="wux-floating-button" visible="{{ visible }}" position="{{ position }}" theme="{{ theme }}" buttons="{{ buttons }}" bind:change="bindchange" bind:click="buttonClicked" />

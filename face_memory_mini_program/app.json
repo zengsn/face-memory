@@ -1,6 +1,5 @@
 {
     "pages": [
-        
         "pages/index/index",
         "pages/history/history",
         "pages/features/features",
@@ -12,7 +11,7 @@
         "pages/feedback/feedback",
         "pages/announcement/announcement",
         "pages/aboutus/aboutus",
-        "pages/toMini/toMini"
+        "pages/detailVisual/detailVisual"
     ],
     "window": {
         "backgroundTextStyle": "light",

@@ -1,0 +1,7 @@
+/* pages/detailVisual/detailVisual.wxss */
+.image-pic {
+  width: 80%;
+  position: relative;
+  margin-left: 10%;
+  margin-top: 5%;
+}

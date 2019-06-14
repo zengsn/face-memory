@@ -74,11 +74,12 @@ public class DetectServiceImpl implements DetectService {
 		// 对图片进行 Base64 编码
         String base64 = Base64Util.encode(imgData);
 		
-		String attributes = "gender,age,smiling,eyestatus,headpose,facequality,"
-				+ "blur,emotion,facequality,beauty,skinstatus";
+		String attributes = "gender,age,smiling,facequality,emotion,facequality,beauty,skinstatus";
+//		blur： 人脸模糊分析结果, eyestatus： 眼睛状态信息,headpose： 人脸姿势分析结果,
 		Response response = null;
 		try {
-			response = commonOperate.detectBase64(base64, 0, attributes);
+			// 设置颜值评分范围在 40~100 之间
+			response = commonOperate.detectBase64(base64, 0, attributes, 40, 100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
